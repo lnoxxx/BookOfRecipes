@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Книга рецептов</string>
+    <string name="add_ingredietn_text">Добавить ингредиент</string>
 </resources>
