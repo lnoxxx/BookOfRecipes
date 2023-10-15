@@ -10,7 +10,7 @@ interface IngredientDao {
     suspend fun insert(ingredient: Ingredient)
 
     @Query("SELECT * FROM ingredients")
-    suspend fun getAllIngredients(): List<Ingredient>
+    suspend fun getAllIngredients(): Array<Ingredient>
 }
 
 @Dao
@@ -19,7 +19,7 @@ interface RecipesDao {
     suspend fun insert(recipes: Recipe)
 
     @Query("SELECT * FROM recipes")
-    suspend fun getAllRecipes(): List<Recipe>
+    suspend fun getAllRecipes(): Array<Recipe>
 }
 
 @Dao
@@ -28,5 +28,5 @@ interface RecipesAndIngredientsDao {
     suspend fun insert(recipesAndIngredients: RecipesAndIngredients)
 
     @Query("SELECT * FROM recipesAndIngredients")
-    suspend fun getAllRecipesAndIngredients(): List<RecipesAndIngredients>
+    suspend fun getAllRecipesAndIngredients(): Array<RecipesAndIngredients>
 }
