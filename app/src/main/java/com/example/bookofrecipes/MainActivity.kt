@@ -6,6 +6,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
+import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.databinding.ActivityMainBinding
 
 
@@ -17,13 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setSupportActionBar(binding.toolbar)
         navigationActive()
 
     }
 
     private fun navigationActive(){
-        setSupportActionBar(binding.toolbar)
         val navController = findNavController(R.id.fragmentContainerView2)
         val conf = AppBarConfiguration(
             setOf(
