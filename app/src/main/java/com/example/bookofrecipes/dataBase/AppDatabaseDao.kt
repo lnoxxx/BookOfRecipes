@@ -1,6 +1,7 @@
 package com.example.bookofrecipes.dataBase
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -11,6 +12,21 @@ interface IngredientDao {
 
     @Query("SELECT * FROM ingredients")
     suspend fun getAllIngredients(): Array<Ingredient>
+
+    @Delete
+    fun deleteIngredient(ingredient: Ingredient)
+}
+
+@Dao
+interface CategoryDao {
+    @Insert
+    suspend fun insert(category: Category)
+
+    @Query("SELECT * FROM categories")
+    suspend fun getAllCategories(): Array<Category>
+
+    @Delete
+    fun deleteCategory(category: Category)
 }
 
 @Dao
