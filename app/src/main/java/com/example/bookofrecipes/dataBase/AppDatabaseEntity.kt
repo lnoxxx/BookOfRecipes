@@ -25,3 +25,9 @@ data class RecipesAndIngredients(
     val ingredientId: Long,
     val howMany: String,
 )
+
+@Entity(tableName = "categories")
+data class Category(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String
+)
