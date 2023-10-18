@@ -4,13 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.bookofrecipes.rcAdapters.IngredientRcAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@Database(entities = [Ingredient::class, Recipe::class, RecipesAndIngredients::class], version = 1)
+@Database(entities =
+[Ingredient::class, Recipe::class, RecipesAndIngredients::class, Category::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun ingredientDao(): IngredientDao
     abstract fun recipeDao(): RecipesDao
     abstract fun recipesAndIngredientsDao(): RecipesAndIngredientsDao
+    abstract fun CategoryDao(): CategoryDao
 
     companion object {
         @Volatile
@@ -27,5 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
                 instance
             }
         }
+
     }
 }
