@@ -19,10 +19,19 @@
         android:id="@+id/addFragment"
         android:name="com.example.bookofrecipes.fragmenst.AddFragment"
         android:label="Добавить рецепт"
-        tools:layout="@layout/fragment_add" />
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_addFragment_to_choseIngredientFragment"
+            app:destination="@id/choseIngredientFragment" />
+    </fragment>
     <fragment
         android:id="@+id/recipesFragment"
         android:name="com.example.bookofrecipes.fragmenst.RecipesFragment"
         android:label="Список рецептов"
         tools:layout="@layout/fragment_recipes" />
+    <fragment
+        android:id="@+id/choseIngredientFragment"
+        android:name="com.example.bookofrecipes.fragmenst.ChoseIngredientFragment"
+        android:label="Выбор ингредиентов"
+        tools:layout="@layout/fragment_chose_ingredient" />
 </navigation>

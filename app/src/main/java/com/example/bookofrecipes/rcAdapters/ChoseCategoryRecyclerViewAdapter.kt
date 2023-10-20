@@ -18,13 +18,10 @@ class ChoseCategoryRecyclerViewAdapter
 
     private var chosenId: Int = 1
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = ChoseCategoryItemBinding.bind(view)
         fun bind(category: Category, chosenId: Int, listener: Listener){
             binding.textView2.text = category.name
-            if (category.id.toInt() == chosenId){
-                itemView.alpha = 1f
-            }
             itemView.setOnClickListener{
                 listener.onClick(category)
             }

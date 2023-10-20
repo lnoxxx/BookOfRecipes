@@ -59,5 +59,9 @@
         <item name="cardBackgroundColor">@color/md_theme_light_tertiaryContainer</item>
     </style>
 
+    <style name="CardViewStyle3">
+        <item name="cardBackgroundColor">@color/md_theme_light_secondary</item>
+    </style>
+
     <style name="Theme.BookOfRecipes" parent="Base.Theme.BookOfRecipes" />
 </resources>
