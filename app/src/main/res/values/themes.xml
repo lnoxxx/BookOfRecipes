@@ -63,5 +63,9 @@
         <item name="cardBackgroundColor">@color/md_theme_light_secondary</item>
     </style>
 
+    <style name="CardViewStyle4">
+        <item name="cardBackgroundColor">@color/md_theme_light_background</item>
+    </style>
+
     <style name="Theme.BookOfRecipes" parent="Base.Theme.BookOfRecipes" />
 </resources>

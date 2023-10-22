@@ -33,5 +33,18 @@
         android:id="@+id/choseIngredientFragment"
         android:name="com.example.bookofrecipes.fragmenst.ChoseIngredientFragment"
         android:label="Выбор ингредиентов"
-        tools:layout="@layout/fragment_chose_ingredient" />
+        tools:layout="@layout/fragment_chose_ingredient" >
+        <action
+            android:id="@+id/action_choseIngredientFragment_to_searchIngredientFragment"
+            app:destination="@id/searchIngredientFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchIngredientFragment"
+        android:name="com.example.bookofrecipes.fragmenst.SearchIngredientFragment"
+        android:label="Выбрать ингредиент"
+        tools:layout="@layout/fragment_search_ingredient">
+        <action
+            android:id="@+id/action_searchIngredientFragment_to_choseIngredientFragment"
+            app:destination="@id/choseIngredientFragment" />
+    </fragment>
 </navigation>

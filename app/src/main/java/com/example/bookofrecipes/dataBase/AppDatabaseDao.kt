@@ -13,9 +13,14 @@ interface IngredientDao {
     @Query("SELECT * FROM ingredients")
     suspend fun getAllIngredients(): Array<Ingredient>
 
+    @Query("SELECT * FROM ingredients WHERE name LIKE :searchQuery")
+    fun searchEntities(searchQuery: String): Array<Ingredient>
+
     @Delete
     fun deleteIngredient(ingredient: Ingredient)
 }
+
+
 
 @Dao
 interface CategoryDao {
