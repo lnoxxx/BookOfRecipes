@@ -3,19 +3,23 @@ package com.example.bookofrecipes.rcAdapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Ingredient
 import com.example.bookofrecipes.databinding.SearchIngredientItemBinding
 
-class SearchIngredientRVAdapter(private val dataset: Array<Ingredient>):
+class SearchIngredientRVAdapter(val listener: Listener,private val dataset: Array<Ingredient>):
     RecyclerView.Adapter<SearchIngredientRVAdapter.ViewHolder>()
 {
 
     class ViewHolder (view: View): RecyclerView.ViewHolder(view){
         val binding = SearchIngredientItemBinding.bind(view)
-        fun bind (ingredient: Ingredient){
+        fun bind (ingredient: Ingredient, listener: Listener){
             binding.textView8.text = ingredient.name
+            itemView.setOnClickListener {
+                listener.onClick(ingredient)
+            }
         }
     }
 
@@ -30,7 +34,11 @@ class SearchIngredientRVAdapter(private val dataset: Array<Ingredient>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataset[position])
+        holder.bind(dataset[position], listener)
+    }
+
+    interface Listener{
+        fun onClick(ingredient: Ingredient)
     }
 
 }

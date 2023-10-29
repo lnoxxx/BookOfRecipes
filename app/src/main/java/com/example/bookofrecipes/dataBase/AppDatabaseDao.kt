@@ -37,7 +37,7 @@ interface CategoryDao {
 @Dao
 interface RecipesDao {
     @Insert
-    suspend fun insert(recipes: Recipe)
+    suspend fun insert(recipes: Recipe): Long
 
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): Array<Recipe>

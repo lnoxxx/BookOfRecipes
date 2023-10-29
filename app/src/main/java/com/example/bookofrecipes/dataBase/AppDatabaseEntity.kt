@@ -13,7 +13,7 @@ data class Ingredient(
 data class Recipe(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
-    val type: String,
+    val type: Int,
     val recipeText: String,
     val isFavorite: Boolean
 )
@@ -23,7 +23,7 @@ data class RecipesAndIngredients(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val recipeId: Long,
     val ingredientId: Long,
-    val howMany: String,
+    val howMany: String?,
 )
 
 @Entity(tableName = "categories")
