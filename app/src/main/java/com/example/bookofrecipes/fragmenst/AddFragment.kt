@@ -1,29 +1,23 @@
 package com.example.bookofrecipes.fragmenst
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.bookofrecipes.Application
-import com.example.bookofrecipes.IngredientCount
+import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.R
+import com.example.bookofrecipes.SharedViewModel
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Category
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.dataBase.RecipesAndIngredients
 import com.example.bookofrecipes.databinding.FragmentAddBinding
-import com.example.bookofrecipes.rcAdapters.CategoryRcAdapter
 import com.example.bookofrecipes.rcAdapters.ChoseCategoryRecyclerViewAdapter
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,14 +27,13 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
 
     private lateinit var bindingAdd: FragmentAddBinding
 
-    var chosenId: Int = 1
-    var chosenCategoryName = "Без категории"
+    private var chosenId: Int = 1
+    private var chosenCategoryName = "Выберите категорию"
+    private var ingredientCountList :MutableList<IngredientCount> = mutableListOf()
 
     lateinit var adapter:ChoseCategoryRecyclerViewAdapter
 
-    var menuOpen = false
-
-    var ingredientCountList = ArrayList<IngredientCount>()
+    private var menuOpen = false
 
     lateinit var database: AppDatabase
 
@@ -49,10 +42,45 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
         savedInstanceState: Bundle?
     ): View {
         bindingAdd = FragmentAddBinding.inflate(inflater)
-
         val app = requireContext().applicationContext as Application
         database = app.database
+        initChoseCategoryRV()
+        bindingAdd.categoryCardView.setOnClickListener {
+            changeMenuView()
+        }
+        bindingAdd.chosenCategoryTV.text = chosenCategoryName
+        bindingAdd.saveButton.setOnClickListener {
+            saveRecipe()
+        }
 
+        val viewModel: SharedViewModel by activityViewModels()
+        if (!viewModel.ingredientCountList.isInitialized){
+            viewModel.ingredientCountList.value = mutableListOf()
+        } else{
+            ingredientCountList = viewModel.ingredientCountList.value ?: mutableListOf()
+        }
+
+        return bindingAdd.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bindingAdd.ingredientCV.setOnClickListener{
+            it.findNavController().navigate(R.id.choseIngredientFragment)
+        }
+    }
+
+    private fun changeMenuView(){
+        if (menuOpen){
+            bindingAdd.choseCategoryRV.visibility = View.GONE
+            menuOpen = false
+        } else{
+            bindingAdd.choseCategoryRV.visibility = View.VISIBLE
+            menuOpen = true
+        }
+    }
+
+    private fun initChoseCategoryRV(){
         bindingAdd.choseCategoryRV.layoutManager =
             LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
@@ -63,65 +91,37 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
                 bindingAdd.choseCategoryRV.adapter = adapter
             }
         }
+    }
 
-
-        bindingAdd.ingredientCV.setOnClickListener{
-            val bundleList = Bundle()
-            bundleList.putSerializable("ingView", ingredientCountList)
-            setFragmentResult("ingListOpen", bundleList)
-            it.findNavController().navigate(R.id.choseIngredientFragment)
-        }
-
-
-        bindingAdd.categoryCardView.setOnClickListener {
-            if (menuOpen){
-                bindingAdd.choseCategoryRV.visibility = View.GONE
-                menuOpen = false
-            } else{
-                bindingAdd.choseCategoryRV.visibility = View.VISIBLE
-                menuOpen = true
+    private fun saveRecipe(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val addedRecipe = Recipe(name = bindingAdd.nameRecipeET.text.toString(),
+                type = chosenId.toLong(),
+                recipeText = bindingAdd.recipeTextET.text.toString(),
+                isFavorite = false
+            )
+            val id = database.recipeDao().insert(addedRecipe)
+            for (ingredient in ingredientCountList){
+                val recipeAndIngredient = RecipesAndIngredients(recipeId = id,
+                    ingredientId = ingredient.id,
+                    howMany = ingredient.many)
+                database.recipesAndIngredientsDao().insert(recipeAndIngredient)
+            }
+            ingredientCountList.clear()
+            withContext(Dispatchers.Main){
+                bindingAdd.nameRecipeET.text.clear()
+                chosenId = 1
+                chosenCategoryName = "Без категории"
+                bindingAdd.recipeTextET.text.clear()
             }
         }
-
-        bindingAdd.chosenCategoryTV.text = chosenCategoryName
-
-        setFragmentResultListener("ingResult"){ key, bundle ->
-            ingredientCountList = bundle.getSerializable("ingList") as ArrayList<IngredientCount>
-        }
-
-
-        bindingAdd.saveButton.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val addedRecipe = Recipe(name = bindingAdd.nameRecipeET.text.toString(),
-                    type = chosenId,
-                    recipeText = bindingAdd.recipeTextET.text.toString(),
-                    isFavorite = false
-                )
-                val id = database.recipeDao().insert(addedRecipe)
-                for (ingredient in ingredientCountList){
-                    val recipeAndIngredient = RecipesAndIngredients(recipeId = id,
-                        ingredientId = ingredient.id.toLong(),
-                        howMany = ingredient.many)
-                    database.recipesAndIngredientsDao().insert(recipeAndIngredient)
-                }
-                ingredientCountList.clear()
-            }
-            bindingAdd.nameRecipeET.text.clear()
-            chosenId = 1
-            chosenCategoryName = "Без категории"
-            bindingAdd.recipeTextET.text.clear()
-        }
-
-        return bindingAdd.root
     }
 
     override fun onClick(category: Category) {
         chosenId = category.id.toInt()
         bindingAdd.chosenCategoryTV.text = category.name
         chosenCategoryName = category.name
-        adapter.changeChose(category.id.toInt())
         bindingAdd.choseCategoryRV.visibility = View.GONE
         menuOpen = false
-
     }
 }

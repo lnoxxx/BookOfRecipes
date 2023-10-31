@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Книга рецептов</string>
     <string name="add_ingredietn_text">Добавить ингредиент</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dialoge_add_button">Добавить</string>
+    <string name="dialoge_delete_button">Удалить</string>
+    <string name="add_ingredient_howMany">Количество ингредиента</string>
+
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

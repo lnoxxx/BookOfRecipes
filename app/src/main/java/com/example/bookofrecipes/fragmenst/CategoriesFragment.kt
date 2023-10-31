@@ -60,8 +60,8 @@ class CategoriesFragment : Fragment() {
         val builder = AlertDialog.Builder(context, R.style.CustomAlertDialogStyle)
 
         val view = layoutInflater.inflate(R.layout.dialoge_input, null)
-        val editText = view.findViewById<EditText>(R.id.editTextText3)
-        val title = view.findViewById<TextView>(R.id.textView)
+        val editText = view.findViewById<EditText>(R.id.dialogeInputET)
+        val title = view.findViewById<TextView>(R.id.dialogeTitleTV)
         title.text = "Добавить категорию"
         builder.setView(view)
 

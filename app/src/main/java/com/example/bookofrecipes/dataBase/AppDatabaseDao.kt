@@ -11,16 +11,17 @@ interface IngredientDao {
     suspend fun insert(ingredient: Ingredient)
 
     @Query("SELECT * FROM ingredients")
-    suspend fun getAllIngredients(): Array<Ingredient>
+    suspend fun getAllIngredients(): MutableList<Ingredient>
 
     @Query("SELECT * FROM ingredients WHERE name LIKE :searchQuery")
-    fun searchEntities(searchQuery: String): Array<Ingredient>
+    fun searchEntities(searchQuery: String): MutableList<Ingredient>
+
+    @Query("SELECT * FROM ingredients WHERE id = :id")
+    fun getIngredientById(id: Long?): Ingredient
 
     @Delete
     fun deleteIngredient(ingredient: Ingredient)
 }
-
-
 
 @Dao
 interface CategoryDao {
@@ -28,7 +29,10 @@ interface CategoryDao {
     suspend fun insert(category: Category)
 
     @Query("SELECT * FROM categories")
-    suspend fun getAllCategories(): Array<Category>
+    suspend fun getAllCategories(): MutableList<Category>
+
+    @Query("SELECT * FROM categories WHERE id = :id")
+    fun getCategoryById(id: Long?): Category?
 
     @Delete
     fun deleteCategory(category: Category)
@@ -40,7 +44,7 @@ interface RecipesDao {
     suspend fun insert(recipes: Recipe): Long
 
     @Query("SELECT * FROM recipes")
-    suspend fun getAllRecipes(): Array<Recipe>
+    suspend fun getAllRecipes(): MutableList<Recipe>
 }
 
 @Dao
@@ -48,6 +52,9 @@ interface RecipesAndIngredientsDao {
     @Insert
     suspend fun insert(recipesAndIngredients: RecipesAndIngredients)
 
+    @Query("SELECT * FROM recipesAndIngredients WHERE recipeId = :recipeId")
+    fun getIngredientsForRecipe(recipeId: Long?): MutableList<RecipesAndIngredients>
+
     @Query("SELECT * FROM recipesAndIngredients")
-    suspend fun getAllRecipesAndIngredients(): Array<RecipesAndIngredients>
+    suspend fun getAllRecipesAndIngredients(): MutableList<RecipesAndIngredients>
 }

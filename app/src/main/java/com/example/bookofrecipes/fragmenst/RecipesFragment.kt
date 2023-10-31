@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.FragmentRecipesBinding
@@ -45,8 +48,16 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         return bindingRecipes.root
     }
 
-    override fun onClick(recipe: Recipe) {
 
+    override fun onClick(recipe: Recipe) {
+        val bundle = Bundle()
+        bundle.putLong("recipeId",recipe.id)
+        bundle.putString("recipeName", recipe.name)
+        bundle.putString("recipeText", recipe.recipeText)
+        bundle.putLong("recipeCategory", recipe.type.toLong())
+
+        setFragmentResult("openRecipeRead",bundle)
+        findNavController().navigate(R.id.recipeReadFragment)
     }
 
 }

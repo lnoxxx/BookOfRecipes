@@ -5,57 +5,50 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.R
+import com.example.bookofrecipes.SharedViewModel
 import com.example.bookofrecipes.dataBase.AppDatabase
-import com.example.bookofrecipes.dataBase.Category
 import com.example.bookofrecipes.dataBase.Ingredient
+import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.databinding.FragmentSearchIngredientBinding
-import com.example.bookofrecipes.rcAdapters.CategoryRcAdapter
 import com.example.bookofrecipes.rcAdapters.SearchIngredientRVAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener {
-
     lateinit var binding: FragmentSearchIngredientBinding
 
     lateinit var database: AppDatabase
+
+    lateinit var adapter: SearchIngredientRVAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchIngredientBinding.inflate(inflater)
-
-        binding.rvIngredientSearch.layoutManager = LinearLayoutManager(context)
-
         val app = requireContext().applicationContext as Application
         database = app.database
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val ingredientList = database.ingredientDao().getAllIngredients()
-            withContext(Dispatchers.Main){
-                val adapter = SearchIngredientRVAdapter(this@SearchIngredientFragment,ingredientList)
-                binding.rvIngredientSearch.adapter = adapter
-            }
-        }
+        recyclerViewInit()
 
+        searchInit()
+
+        return binding.root
+    }
+
+    private fun searchInit(){
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -64,9 +57,7 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
                 CoroutineScope(Dispatchers.IO).launch {
                     val ingredientList = database.ingredientDao().searchEntities("%${text}%")
                     withContext(Dispatchers.Main){
-                        val adapter = SearchIngredientRVAdapter(
-                            this@SearchIngredientFragment,ingredientList)
-                        binding.rvIngredientSearch.adapter = adapter
+                        adapter.clearSearch(ingredientList)
                     }
                 }
             }
@@ -75,8 +66,17 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         }
 
         binding.editTextText2.addTextChangedListener(textWatcher)
+    }
 
-        return binding.root
+    private fun recyclerViewInit(){
+        binding.rvIngredientSearch.layoutManager = LinearLayoutManager(context)
+        CoroutineScope(Dispatchers.IO).launch {
+            val ingredientList = database.ingredientDao().getAllIngredients()
+            withContext(Dispatchers.Main){
+                adapter = SearchIngredientRVAdapter(this@SearchIngredientFragment,ingredientList)
+                binding.rvIngredientSearch.adapter = adapter
+            }
+        }
     }
 
     override fun onClick(ingredient: Ingredient) {
@@ -84,25 +84,25 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
     }
 
     private fun showInputDialog(ingredient: Ingredient) {
-
         val builder = AlertDialog.Builder(context, R.style.CustomAlertDialogStyle)
 
         val view = layoutInflater.inflate(R.layout.dialoge_input, null)
-        val editText = view.findViewById<EditText>(R.id.editTextText3)
-        val title = view.findViewById<TextView>(R.id.textView)
+        val editText = view.findViewById<EditText>(R.id.dialogeInputET)
+        val title = view.findViewById<TextView>(R.id.dialogeTitleTV)
         title.text = "Количество ингредиента"
         builder.setView(view)
 
-        builder.setPositiveButton("Добавить", DialogInterface.OnClickListener { dialog, _ ->
+        builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
             val inputText = editText.text.toString()
 
-            val bundle = Bundle().apply {
-                putInt("ingId", ingredient.id.toInt())
-                putString("ingName", ingredient.name)
-                putString("ingCount",inputText)
-            }
+            val ingredientCount = IngredientCount(
+                id = ingredient.id,
+                many = inputText,
+                name = ingredient.name)
 
-            setFragmentResult("ingSelect", bundle)
+            val viewModel: SharedViewModel by activityViewModels()
+            viewModel.ingredientCountList.value?.add(ingredientCount)
+
             fragmentManager?.popBackStack()
 
             dialog.dismiss()

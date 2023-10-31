@@ -5,57 +5,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
-import androidx.navigation.NavController
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bookofrecipes.IngredientCount
 import com.example.bookofrecipes.R
+import com.example.bookofrecipes.SharedViewModel
+import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.databinding.FragmentChoseIngredientBinding
-import com.example.bookofrecipes.rcAdapters.ChoseIngradientRVadapter
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import com.example.bookofrecipes.rcAdapters.ChoseIngredientRVAdapter
 
 class ChoseIngredientFragment : Fragment() {
 
     lateinit var binding: FragmentChoseIngredientBinding
 
-    var ingredientCountList = ArrayList<IngredientCount>()
+    private var ingredientCountList :MutableList<IngredientCount> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentChoseIngredientBinding.inflate(inflater)
-
         binding.addButton.setOnClickListener {
             it.findNavController().navigate(R.id.searchIngredientFragment)
         }
 
-        setFragmentResultListener("ingSelect"){ key, bundle ->
-            val resultId = bundle.getInt("ingId")
-            val resultCount = bundle.getString("ingCount")
-            val resultName= bundle.getString("ingName")
+        val viewModel: SharedViewModel by activityViewModels()
 
-            val ingredient = IngredientCount(resultId, resultCount, resultName)
-            ingredientCountList.add(ingredient)
-
-            val bundleList = Bundle()
-            bundleList.putSerializable("ingList", ingredientCountList)
-            setFragmentResult("ingResult", bundleList)
-        }
-
-        setFragmentResultListener("ingListOpen"){ key, bundle ->
-            ingredientCountList = bundle.getSerializable("ingView") as ArrayList<IngredientCount>
-            binding.ingredRv.adapter = ChoseIngradientRVadapter(ingredientCountList)
-        }
+        ingredientCountList = viewModel.ingredientCountList.value ?: mutableListOf()
 
         binding.ingredRv.layoutManager = LinearLayoutManager(context)
 
-        binding.ingredRv.adapter = ChoseIngradientRVadapter(ingredientCountList)
-
+        binding.ingredRv.adapter = ChoseIngredientRVAdapter(ingredientCountList)
 
         return binding.root
     }

@@ -1,6 +1,5 @@
 package com.example.bookofrecipes.rcAdapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.RecipeItemBinding
 
-class RecipeRecyclerViewAdapter(val listener: Listener,private val recipeList: Array<Recipe>):
+class RecipeRecyclerViewAdapter(private val listener: Listener, private val recipeList: MutableList<Recipe>):
     RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder>() {
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){

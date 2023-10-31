@@ -8,7 +8,7 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Ingredient
 import com.example.bookofrecipes.databinding.IngredientItemBinding
 
-class IngredientRcAdapter(private val dataSet: Array<Ingredient>):
+class IngredientRcAdapter(private val dataSet: MutableList<Ingredient>):
     RecyclerView.Adapter<IngredientRcAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
@@ -18,21 +18,33 @@ class IngredientRcAdapter(private val dataSet: Array<Ingredient>):
         }
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): IngredientRcAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).
         inflate(R.layout.ingredient_item,parent,false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: IngredientRcAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(dataSet[position])
     }
 
+
     override fun getItemCount(): Int {
         return dataSet.size
+    }
+
+    fun deleteIngredient(ingredient: Ingredient){
+        dataSet.remove(ingredient)
+        notifyDataSetChanged()
+    }
+
+    fun update(){
+        notifyDataSetChanged()
+    }
+
+    fun addIngredient(addIngredient: Ingredient){
+        dataSet.add(addIngredient)
+        notifyDataSetChanged()
     }
 
 }

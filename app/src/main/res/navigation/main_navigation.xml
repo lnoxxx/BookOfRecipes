@@ -28,7 +28,11 @@
         android:id="@+id/recipesFragment"
         android:name="com.example.bookofrecipes.fragmenst.RecipesFragment"
         android:label="Список рецептов"
-        tools:layout="@layout/fragment_recipes" />
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_recipesFragment_to_recipeReadFragment"
+            app:destination="@id/recipeReadFragment" />
+    </fragment>
     <fragment
         android:id="@+id/choseIngredientFragment"
         android:name="com.example.bookofrecipes.fragmenst.ChoseIngredientFragment"
@@ -47,4 +51,9 @@
             android:id="@+id/action_searchIngredientFragment_to_choseIngredientFragment"
             app:destination="@id/choseIngredientFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/recipeReadFragment"
+        android:name="com.example.bookofrecipes.fragmenst.RecipeReadFragment"
+        android:label="Рецепт"
+        tools:layout="@layout/fragment_recipe_read" />
 </navigation>
