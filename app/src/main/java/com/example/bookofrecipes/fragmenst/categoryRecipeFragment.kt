@@ -7,48 +7,70 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Recipe
-import com.example.bookofrecipes.databinding.FragmentRecipesBinding
+import com.example.bookofrecipes.databinding.FragmentCategoryRecipeBinding
 import com.example.bookofrecipes.rcAdapters.RecipeRecyclerViewAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
 
-    private lateinit var bindingRecipes: FragmentRecipesBinding
+class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
+
+    lateinit var binding: FragmentCategoryRecipeBinding
 
     lateinit var database: AppDatabase
+
+    var categoryId: Long = -1
+
+    private var recipeList: MutableList<Recipe> = mutableListOf()
+
+    private lateinit var adapter: RecipeRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        bindingRecipes = FragmentRecipesBinding.inflate(inflater)
-
+        binding = FragmentCategoryRecipeBinding.inflate(inflater)
         val app = requireContext().applicationContext as Application
         database = app.database
 
-        bindingRecipes.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.categoryRecipeRV.layoutManager = LinearLayoutManager(context)
 
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val recipeArray = database.recipeDao().getAllRecipes()
-            withContext(Dispatchers.Main){
-                val adapter = RecipeRecyclerViewAdapter(this@RecipesFragment,recipeArray)
-                bindingRecipes.recipeRecyclerView.adapter = adapter
+        setFragmentResultListener("categoryResult"){requestKey, bundle ->
+            categoryId = bundle.getLong("chosenCategoryForView")
+            CoroutineScope(Dispatchers.IO).launch {
+                recipeList = database.recipeDao().getRecipeInCategory(categoryId)
+                withContext(Dispatchers.Main){
+                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList)
+                    binding.categoryRecipeRV.adapter = adapter
+                }
             }
         }
 
-        return bindingRecipes.root
+        return binding.root
     }
 
+    override fun onResume() {
+        if (categoryId.toInt() == -1){
+            fragmentManager?.popBackStack()
+        }
+        super.onResume()
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeList = database.recipeDao().getRecipeInCategory(categoryId)
+            withContext(Dispatchers.Main){
+                adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList)
+                binding.categoryRecipeRV.adapter = adapter
+            }
+        }
+    }
 
     override fun onClick(recipe: Recipe) {
         val bundle = Bundle()

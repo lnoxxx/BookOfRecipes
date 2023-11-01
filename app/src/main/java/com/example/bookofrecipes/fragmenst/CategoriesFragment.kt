@@ -3,14 +3,18 @@ package com.example.bookofrecipes.fragmenst
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.room.Room
+import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Category
@@ -23,9 +27,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CategoriesFragment : Fragment() {
+class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
 
     private lateinit var bindingCategories: FragmentCategoriesBinding
+
+    lateinit var adapter: CategoryRcAdapter
+
+    lateinit var database: AppDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,17 +41,14 @@ class CategoriesFragment : Fragment() {
     ): View {
         bindingCategories = FragmentCategoriesBinding.inflate(inflater)
 
-        val database = Room.databaseBuilder(
-            requireContext(),
-            AppDatabase::class.java,
-            "my_database"
-        ).build()
+        val app = requireContext().applicationContext as Application
+        database = app.database
 
         bindingCategories.rcCategory.layoutManager = GridLayoutManager(context,2)
         CoroutineScope(Dispatchers.IO).launch {
             val categoryList = database.CategoryDao().getAllCategories()
             withContext(Dispatchers.Main) {
-                val adapter = CategoryRcAdapter(categoryList)
+                adapter = CategoryRcAdapter(this@CategoriesFragment,categoryList)
                 bindingCategories.rcCategory.adapter = adapter
             }
         }
@@ -79,10 +84,8 @@ class CategoriesFragment : Fragment() {
 
             CoroutineScope(Dispatchers.IO).launch {
                 database.CategoryDao().insert(addedCategory)
-                val categoryList = database.CategoryDao().getAllCategories()
                 withContext(Dispatchers.Main) {
-                    val adapter = CategoryRcAdapter(categoryList)
-                    bindingCategories.rcCategory.adapter = adapter
+                    adapter.addCategory(addedCategory)
                 }
             }
 
@@ -91,5 +94,13 @@ class CategoriesFragment : Fragment() {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun onClick(category: Category) {
+        val categoryBundle = Bundle()
+        categoryBundle.putLong("chosenCategoryForView",category.id)
+        setFragmentResult("categoryResult",categoryBundle)
+
+        findNavController().navigate(R.id.categoryRecipeFragment)
     }
 }

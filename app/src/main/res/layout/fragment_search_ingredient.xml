@@ -18,7 +18,7 @@
         <EditText
             android:id="@+id/editTextText2"
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Поиск"
@@ -28,5 +28,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvIngredientSearch"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/searchAddIngredientButt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="Создать ингредиент"
+        app:icon="@drawable/ic_add" />
 </LinearLayout>

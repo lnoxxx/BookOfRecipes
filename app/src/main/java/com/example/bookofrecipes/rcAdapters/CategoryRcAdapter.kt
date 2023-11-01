@@ -8,13 +8,17 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Category
 import com.example.bookofrecipes.databinding.CategoryItemBinding
 
-class CategoryRcAdapter(private val categoryList: MutableList<Category>):
+class CategoryRcAdapter(private val listener: Listener,
+                        private val categoryList: MutableList<Category>):
     RecyclerView.Adapter<CategoryRcAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = CategoryItemBinding.bind(view)
-        fun bind(category: Category){
+        fun bind(category: Category, listener: Listener){
             binding.textView3.text = category.name
+            binding.categoryCVitem.setOnClickListener {
+                listener.onClick(category)
+            }
         }
     }
 
@@ -25,10 +29,19 @@ class CategoryRcAdapter(private val categoryList: MutableList<Category>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(categoryList[position])
+        holder.bind(categoryList[position], listener)
     }
 
     override fun getItemCount(): Int {
         return categoryList.size
+    }
+
+    fun addCategory(category: Category){
+        categoryList.add(category)
+        notifyDataSetChanged()
+    }
+
+    interface Listener{
+        fun onClick(category: Category)
     }
 }

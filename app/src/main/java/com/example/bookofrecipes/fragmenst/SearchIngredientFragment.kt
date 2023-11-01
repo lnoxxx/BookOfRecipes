@@ -45,6 +45,10 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
 
         searchInit()
 
+        binding.searchAddIngredientButt.setOnClickListener {
+            showInputDialogAddIngredient()
+        }
+
         return binding.root
     }
 
@@ -108,6 +112,24 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
             dialog.dismiss()
         })
 
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showInputDialogAddIngredient() {
+        val builder = AlertDialog.Builder(context,R.style.CustomAlertDialogStyle)
+        val view = layoutInflater.inflate(R.layout.dialoge_input, null)
+        val editText = view.findViewById<EditText>(R.id.dialogeInputET)
+        builder.setView(view)
+        builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
+            val inputText = editText.text.toString()
+            val addIngredient = Ingredient(name = inputText)
+            CoroutineScope(Dispatchers.IO).launch {
+                database.ingredientDao().insert(addIngredient)
+            }
+            showInputDialog(addIngredient)
+            dialog.dismiss()
+        })
         val dialog = builder.create()
         dialog.show()
     }

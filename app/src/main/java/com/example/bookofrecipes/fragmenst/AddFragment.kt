@@ -18,6 +18,7 @@ import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.dataBase.RecipesAndIngredients
 import com.example.bookofrecipes.databinding.FragmentAddBinding
 import com.example.bookofrecipes.rcAdapters.ChoseCategoryRecyclerViewAdapter
+import com.example.bookofrecipes.rcAdapters.ChoseIngredientRVAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,13 +61,17 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
             ingredientCountList = viewModel.ingredientCountList.value ?: mutableListOf()
         }
 
+        bindingAdd.ingredRv.layoutManager = LinearLayoutManager(context)
+
+        bindingAdd.ingredRv.adapter = ChoseIngredientRVAdapter(ingredientCountList)
+
         return bindingAdd.root
     }
 
     override fun onResume() {
         super.onResume()
         bindingAdd.ingredientCV.setOnClickListener{
-            it.findNavController().navigate(R.id.choseIngredientFragment)
+            it.findNavController().navigate(R.id.searchIngredientFragment)
         }
     }
 

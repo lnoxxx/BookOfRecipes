@@ -27,7 +27,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="Оливье"
                     android:textSize="24sp" />
             </androidx.cardview.widget.CardView>
 
@@ -43,7 +42,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="Салат"
                     android:textSize="20sp" />
             </androidx.cardview.widget.CardView>
 
@@ -64,7 +62,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="16dp"
-                    android:text="Допустим какой то очень длинный рецепт блюда которое мы там хотим приготовить например да вот для этого там нужно что то пожарить что то сварить еще да"
                     android:textSize="20sp" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>

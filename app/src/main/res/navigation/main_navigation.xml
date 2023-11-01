@@ -14,15 +14,19 @@
         android:id="@+id/categoriesFragment"
         android:name="com.example.bookofrecipes.fragmenst.CategoriesFragment"
         android:label="Категории"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_categories" >
+        <action
+            android:id="@+id/action_categoriesFragment_to_categoryRecipeFragment2"
+            app:destination="@id/categoryRecipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addFragment"
         android:name="com.example.bookofrecipes.fragmenst.AddFragment"
         android:label="Добавить рецепт"
         tools:layout="@layout/fragment_add" >
         <action
-            android:id="@+id/action_addFragment_to_choseIngredientFragment"
-            app:destination="@id/choseIngredientFragment" />
+            android:id="@+id/action_addFragment_to_searchIngredientFragment"
+            app:destination="@id/searchIngredientFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipesFragment"
@@ -34,26 +38,17 @@
             app:destination="@id/recipeReadFragment" />
     </fragment>
     <fragment
-        android:id="@+id/choseIngredientFragment"
-        android:name="com.example.bookofrecipes.fragmenst.ChoseIngredientFragment"
-        android:label="Выбор ингредиентов"
-        tools:layout="@layout/fragment_chose_ingredient" >
-        <action
-            android:id="@+id/action_choseIngredientFragment_to_searchIngredientFragment"
-            app:destination="@id/searchIngredientFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/searchIngredientFragment"
         android:name="com.example.bookofrecipes.fragmenst.SearchIngredientFragment"
         android:label="Выбрать ингредиент"
-        tools:layout="@layout/fragment_search_ingredient">
-        <action
-            android:id="@+id/action_searchIngredientFragment_to_choseIngredientFragment"
-            app:destination="@id/choseIngredientFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_search_ingredient"/>
     <fragment
         android:id="@+id/recipeReadFragment"
         android:name="com.example.bookofrecipes.fragmenst.RecipeReadFragment"
         android:label="Рецепт"
         tools:layout="@layout/fragment_recipe_read" />
+    <fragment
+        android:id="@+id/categoryRecipeFragment"
+        android:name="com.example.bookofrecipes.fragmenst.CategoryRecipeFragment"
+        android:label="Рецепты в категории" />
 </navigation>

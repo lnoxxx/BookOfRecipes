@@ -45,6 +45,9 @@ interface RecipesDao {
 
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): MutableList<Recipe>
+
+    @Query("SELECT * FROM recipes WHERE type = :idType")
+    fun getRecipeInCategory(idType: Long?): MutableList<Recipe>
 }
 
 @Dao
@@ -55,6 +58,12 @@ interface RecipesAndIngredientsDao {
     @Query("SELECT * FROM recipesAndIngredients WHERE recipeId = :recipeId")
     fun getIngredientsForRecipe(recipeId: Long?): MutableList<RecipesAndIngredients>
 
+    @Query("SELECT * FROM recipesAndIngredients WHERE ingredientId = :ingredient")
+    fun getWhereIngredientId(ingredient: Long?): MutableList<RecipesAndIngredients>
+
     @Query("SELECT * FROM recipesAndIngredients")
     suspend fun getAllRecipesAndIngredients(): MutableList<RecipesAndIngredients>
+
+    @Delete
+    fun deleteRecipeAndIngredient(recipesAndIngredients: RecipesAndIngredients)
 }

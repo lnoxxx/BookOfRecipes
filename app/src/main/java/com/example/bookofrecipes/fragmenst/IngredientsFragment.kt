@@ -39,8 +39,6 @@ class IngredientsFragment : Fragment() {
 
         recyclerViewInit()
 
-        swapMngInit()
-
         bindingIngredients.addIngredientButton.setOnClickListener{
             showInputDialog()
         }
@@ -61,11 +59,6 @@ class IngredientsFragment : Fragment() {
         }
     }
 
-    private fun swapMngInit(){
-        val swapHelper = getSwapMng()
-        swapHelper.attachToRecyclerView(bindingIngredients.rcIngredients)
-    }
-
     private fun showInputDialog() {
         val builder = AlertDialog.Builder(context,R.style.CustomAlertDialogStyle)
         val view = layoutInflater.inflate(R.layout.dialoge_input, null)
@@ -84,40 +77,5 @@ class IngredientsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun getSwapMng(): ItemTouchHelper{
-        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback
-            (0,ItemTouchHelper.LEFT){
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val builder = AlertDialog.Builder(context,R.style.CustomAlertDialogStyle)
-                val view = layoutInflater.inflate(R.layout.dialog_delete, null)
-                builder.setView(view)
-                builder.setPositiveButton(R.string.dialoge_delete_button,
-                    DialogInterface.OnClickListener { dialog, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val ingredientList = database.ingredientDao().getAllIngredients()
-                            database.ingredientDao().
-                            deleteIngredient(ingredientList[viewHolder.adapterPosition])
-                            withContext(Dispatchers.Main) {
-                                adapter.deleteIngredient(ingredientList[viewHolder.adapterPosition])
-                            }
-                        }
-                        dialog.dismiss()
-                    }
-                )
-                val dialog = builder.create()
-                dialog.setOnDismissListener {
-                    adapter.update()
-                }
-                dialog.show()
-            }
-        })
-    }
 
 }

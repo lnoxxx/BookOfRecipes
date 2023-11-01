@@ -69,8 +69,4 @@
 
     <style name="Theme.BookOfRecipes" parent="Base.Theme.BookOfRecipes" />
 
-    <style name="ThemeOverlay.BookOfRecipes.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
-    </style>
 </resources>
