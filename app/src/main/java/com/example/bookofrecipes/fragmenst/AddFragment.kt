@@ -24,15 +24,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
+class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, ChoseIngredientRVAdapter.Listener {
 
     private lateinit var bindingAdd: FragmentAddBinding
 
     private var chosenId: Int = 1
-    private var chosenCategoryName = "Выберите категорию"
+    private var chosenCategoryName = "Без категории"
     private var ingredientCountList :MutableList<IngredientCount> = mutableListOf()
 
     lateinit var adapter:ChoseCategoryRecyclerViewAdapter
+
+    lateinit var ingredientAdapter:ChoseIngredientRVAdapter
 
     private var menuOpen = false
 
@@ -63,7 +65,8 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
 
         bindingAdd.ingredRv.layoutManager = LinearLayoutManager(context)
 
-        bindingAdd.ingredRv.adapter = ChoseIngredientRVAdapter(ingredientCountList)
+        ingredientAdapter = ChoseIngredientRVAdapter(this, ingredientCountList)
+        bindingAdd.ingredRv.adapter = ingredientAdapter
 
         return bindingAdd.root
     }
@@ -116,10 +119,11 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
             withContext(Dispatchers.Main){
                 bindingAdd.nameRecipeET.text.clear()
                 chosenId = 1
-                chosenCategoryName = "Без категории"
                 bindingAdd.recipeTextET.text.clear()
+                ingredientAdapter.clearRecyclerView()
             }
         }
+        chosenCategoryName = "Без категории"
     }
 
     override fun onClick(category: Category) {
@@ -129,4 +133,12 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener {
         bindingAdd.choseCategoryRV.visibility = View.GONE
         menuOpen = false
     }
+
+    override fun onDeleteChosenIngredient(ingredientCount: IngredientCount) {
+        val viewModel: SharedViewModel by activityViewModels()
+        viewModel.ingredientCountList.value?.remove(ingredientCount)
+        ingredientCountList.remove(ingredientCount)
+        ingredientAdapter.deleteCount(ingredientCount)
+    }
+
 }

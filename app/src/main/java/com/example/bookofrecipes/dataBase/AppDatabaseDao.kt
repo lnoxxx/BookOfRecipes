@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface IngredientDao {
     @Insert
-    suspend fun insert(ingredient: Ingredient)
+    suspend fun insert(ingredient: Ingredient): Long
 
     @Query("SELECT * FROM ingredients")
     suspend fun getAllIngredients(): MutableList<Ingredient>
@@ -46,8 +47,17 @@ interface RecipesDao {
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): MutableList<Recipe>
 
+    @Query("SELECT * FROM recipes WHERE name LIKE :searchQuery")
+    fun searchRecipeByName(searchQuery: String): MutableList<Recipe>
+
     @Query("SELECT * FROM recipes WHERE type = :idType")
     fun getRecipeInCategory(idType: Long?): MutableList<Recipe>
+
+    @Update
+    fun updateRecipe(recipe: Recipe)
+
+    @Delete
+    fun deleteRecipe(recipes: Recipe)
 }
 
 @Dao

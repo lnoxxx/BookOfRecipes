@@ -18,6 +18,7 @@
         android:layout_height="68dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/green"
         android:elevation="10dp"
         android:shadowColor="#EF1E1E"
         android:text="@string/add_ingredietn_text"

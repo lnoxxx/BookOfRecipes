@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -125,9 +126,12 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
             val inputText = editText.text.toString()
             val addIngredient = Ingredient(name = inputText)
             CoroutineScope(Dispatchers.IO).launch {
-                database.ingredientDao().insert(addIngredient)
+                val ingredientId = database.ingredientDao().insert(addIngredient)
+                val newIngredient = database.ingredientDao().getIngredientById(ingredientId)
+                withContext(Dispatchers.Main){
+                    showInputDialog(newIngredient)
+                }
             }
-            showInputDialog(addIngredient)
             dialog.dismiss()
         })
         val dialog = builder.create()

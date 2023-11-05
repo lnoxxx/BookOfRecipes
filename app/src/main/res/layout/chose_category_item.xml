@@ -7,26 +7,26 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/choseCategoryCV"
-        style="@style/CardViewStyle3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:alpha="1"
-        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@color/green"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView2"
-            style="@style/Widget.Material3.MaterialTimePicker.Display.HelperText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
             android:text="Без категории"
-            android:textColor="@color/md_theme_light_onSecondary"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

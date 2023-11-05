@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class RecipeReadFragment : Fragment() {
+class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
 
     lateinit var binding: FragmentRecipeReadBinding
 
@@ -82,12 +82,16 @@ class RecipeReadFragment : Fragment() {
 
                 withContext(Dispatchers.Main){
                     binding.recipeTypeTV.text = category?.name
-                    binding.ingrRecyclerView.adapter = ChoseIngredientRVAdapter(ingredientArrayList)
+                    binding.ingrRecyclerView.adapter = ChoseIngredientRVAdapter(this@RecipeReadFragment ,ingredientArrayList)
                     binding.recipeNameTV.text = recipeName
                     binding.recipeTextTV.text = recipeText
                 }
             }
         }
+    }
+
+    override fun onDeleteChosenIngredient(ingredientCount: IngredientCount) {
+
     }
 
 }

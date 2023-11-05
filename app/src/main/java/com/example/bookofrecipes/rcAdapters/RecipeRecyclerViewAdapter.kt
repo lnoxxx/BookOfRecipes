@@ -8,15 +8,28 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.RecipeItemBinding
 
-class RecipeRecyclerViewAdapter(private val listener: Listener, private val recipeList: MutableList<Recipe>):
+class RecipeRecyclerViewAdapter(private val listener: Listener, private var recipeList: MutableList<Recipe>):
     RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder>() {
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val binding = RecipeItemBinding.bind(view)
         fun bind(recipe: Recipe,listener: Listener){
             binding.textView11.text = recipe.name
+            binding.deleteRecipeButton.visibility = View.GONE
+            var recipeText = recipe.recipeText
+            if (recipeText.length > 40){
+                recipeText = recipeText.take(40) + "..."
+            }
+            binding.textView4.text = recipeText
             binding.recipeCardView.setOnClickListener{
                 listener.onClick(recipe)
+            }
+            binding.deleteRecipeButton.setOnClickListener {
+                listener.onDelete(recipe)
+            }
+            binding.recipeCardView.setOnLongClickListener {
+                binding.deleteRecipeButton.visibility = View.VISIBLE
+                return@setOnLongClickListener true
             }
         }
     }
@@ -34,7 +47,18 @@ class RecipeRecyclerViewAdapter(private val listener: Listener, private val reci
         holder.bind(recipeList[position],listener)
     }
 
+    fun clearSearch(newList: MutableList<Recipe>){
+        recipeList = newList
+        notifyDataSetChanged()
+    }
+
+    fun deleteRecipe(recipe: Recipe){
+        recipeList.remove(recipe)
+        notifyDataSetChanged()
+    }
+
     interface Listener{
         fun onClick(recipe: Recipe)
+        fun onDelete(recipe: Recipe)
     }
 }

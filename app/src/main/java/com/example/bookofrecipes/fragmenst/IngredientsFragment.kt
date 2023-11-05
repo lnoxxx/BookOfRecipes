@@ -3,6 +3,7 @@ package com.example.bookofrecipes.fragmenst
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class IngredientsFragment : Fragment() {
+class IngredientsFragment : Fragment(), IngredientRcAdapter.Listener {
     private lateinit var bindingIngredients: FragmentIngredientsBinding
 
     lateinit var database: AppDatabase
@@ -53,7 +54,7 @@ class IngredientsFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val ingredientList = database.ingredientDao().getAllIngredients()
             withContext(Dispatchers.Main) {
-                adapter = IngredientRcAdapter(ingredientList)
+                adapter = IngredientRcAdapter(this@IngredientsFragment, ingredientList)
                 bindingIngredients.rcIngredients.adapter = adapter
             }
         }
@@ -75,6 +76,20 @@ class IngredientsFragment : Fragment() {
         })
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun onDeleteIngredient(ingredient: Ingredient) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val ingredientInRecipeList =
+                database.recipesAndIngredientsDao().getWhereIngredientId(ingredient.id)
+            for (item in ingredientInRecipeList){
+                database.recipesAndIngredientsDao().deleteRecipeAndIngredient(item)
+            }
+            database.ingredientDao().deleteIngredient(ingredient)
+            withContext(Dispatchers.Main){
+                adapter.deleteIngredient(ingredient)
+            }
+        }
     }
 
 

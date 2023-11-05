@@ -83,4 +83,9 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         findNavController().navigate(R.id.recipeReadFragment)
     }
 
+    override fun onDelete(recipe: Recipe) {
+
+    }
+
+
 }

@@ -19,6 +19,7 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Category
 import com.example.bookofrecipes.dataBase.Ingredient
+import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.FragmentCategoriesBinding
 import com.example.bookofrecipes.rcAdapters.CategoryRcAdapter
 import com.example.bookofrecipes.rcAdapters.IngredientRcAdapter
@@ -70,7 +71,6 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
         title.text = "Добавить категорию"
         builder.setView(view)
 
-
         builder.setPositiveButton("Добавить", DialogInterface.OnClickListener { dialog, _ ->
             val inputText = editText.text.toString()
 
@@ -102,5 +102,27 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
         setFragmentResult("categoryResult",categoryBundle)
 
         findNavController().navigate(R.id.categoryRecipeFragment)
+    }
+
+    override fun onDelete(category: Category) {
+        if (category.id.toInt() == 1){
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            val recipeInCategoryList = database.recipeDao().getRecipeInCategory(category.id)
+            for (recipe in recipeInCategoryList){
+                val changedRecipe = Recipe(
+                    id = recipe.id,
+                    name = recipe.name,
+                    type = 1,
+                    recipeText = recipe.recipeText,
+                    isFavorite = recipe.isFavorite)
+                database.recipeDao().updateRecipe(changedRecipe)
+            }
+            database.CategoryDao().deleteCategory(category)
+            withContext(Dispatchers.Main){
+                adapter.deleteCategory(category)
+            }
+        }
     }
 }
