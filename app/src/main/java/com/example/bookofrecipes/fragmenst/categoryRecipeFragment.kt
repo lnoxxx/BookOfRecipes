@@ -1,7 +1,6 @@
 package com.example.bookofrecipes.fragmenst
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Recipe
@@ -28,7 +28,9 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
 
     lateinit var database: AppDatabase
 
-    var categoryId: Long = -1
+    private var categoryId: Long = -1
+
+    private var favorite: Boolean = false
 
     private var recipeList: MutableList<Recipe> = mutableListOf()
 
@@ -44,46 +46,57 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
 
         binding.categoryRecipeRV.layoutManager = LinearLayoutManager(context)
 
-        setFragmentResultListener("categoryResult"){requestKey, bundle ->
+        setFragmentResultListener("categoryResult"){ _, bundle ->
             categoryId = bundle.getLong("chosenCategoryForView")
-            CoroutineScope(Dispatchers.IO).launch {
-                recipeList = database.recipeDao().getRecipeInCategory(categoryId)
-                withContext(Dispatchers.Main){
-                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList)
-                    binding.categoryRecipeRV.adapter = adapter
-                }
-            }
+            favorite = bundle.getBoolean("favorite?")
         }
 
         return binding.root
     }
 
     override fun onResume() {
-        if (categoryId.toInt() == -1){
-            fragmentManager?.popBackStack()
-        }
         super.onResume()
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeList = database.recipeDao().getRecipeInCategory(categoryId)
-            withContext(Dispatchers.Main){
-                adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList)
-                binding.categoryRecipeRV.adapter = adapter
+        if (favorite){
+            CoroutineScope(Dispatchers.IO).launch {
+                recipeList = database.recipeDao().getFavoriteRecipe()
+                withContext(Dispatchers.Main){
+                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
+                    binding.categoryRecipeRV.adapter = adapter
+                }
+            }
+        } else{
+            CoroutineScope(Dispatchers.IO).launch {
+                recipeList = database.recipeDao().getRecipeInCategory(categoryId)
+                withContext(Dispatchers.Main){
+                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
+                    binding.categoryRecipeRV.adapter = adapter
+                }
             }
         }
+        (activity as MainActivity).setBottomNavigationVisibility(false)
     }
+
 
     override fun onClick(recipe: Recipe) {
         val bundle = Bundle()
         bundle.putLong("recipeId",recipe.id)
         bundle.putString("recipeName", recipe.name)
         bundle.putString("recipeText", recipe.recipeText)
-        bundle.putLong("recipeCategory", recipe.type.toLong())
+        bundle.putLong("recipeCategory", recipe.type)
 
         setFragmentResult("openRecipeRead",bundle)
         findNavController().navigate(R.id.recipeReadFragment)
     }
 
     override fun onDelete(recipe: Recipe) {
+
+    }
+
+    override fun onMakeFavorite(recipe: Recipe) {
+
+    }
+
+    override fun onDeleteInFavorite(recipe: Recipe) {
 
     }
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Recipe
@@ -41,8 +42,11 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         val app = requireContext().applicationContext as Application
         database = app.database
 
-        bindingRecipes.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
+        return bindingRecipes.root
+    }
 
+    private fun recyclerViewInit(){
+        bindingRecipes.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
         CoroutineScope(Dispatchers.IO).launch {
             val recipeArray = database.recipeDao().getAllRecipes()
             withContext(Dispatchers.Main){
@@ -50,14 +54,13 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                 bindingRecipes.recipeRecyclerView.adapter = adapter
             }
         }
-
-        searchInit()
-
-        return bindingRecipes.root
     }
 
     override fun onResume() {
         super.onResume()
+        (activity as MainActivity).setBottomNavigationVisibility(true)
+        recyclerViewInit()
+        searchInit()
         bindingRecipes.searchRecipeEditText.text.clear()
     }
 
@@ -104,5 +107,33 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
             }
         }
     }
+
+    override fun onMakeFavorite(recipe: Recipe) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val newRecipe = Recipe(
+                id = recipe.id,
+                name = recipe.name,
+                type = recipe.type,
+                recipeText = recipe.recipeText,
+                isFavorite = true
+            )
+            database.recipeDao().updateRecipe(newRecipe)
+        }
+    }
+
+    override fun onDeleteInFavorite(recipe: Recipe) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val newRecipe = Recipe(
+                id = recipe.id,
+                name = recipe.name,
+                type = recipe.type,
+                recipeText = recipe.recipeText,
+                isFavorite = false
+            )
+            database.recipeDao().updateRecipe(newRecipe)
+        }
+    }
+
+
 
 }

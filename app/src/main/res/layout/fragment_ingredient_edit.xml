@@ -5,50 +5,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragmenst.SearchIngredientFragment">
+    tools:context=".fragmenst.IngredientEditFragment" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            style="@style/MainCardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_weight="1"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="32dp"
             app:cardElevation="0dp">
 
             <EditText
                 android:id="@+id/editTextText2"
-                style="@style/EditTextMain"
+                style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginVertical="12dp"
-                android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="Поиск"
                 android:inputType="text|textAutoComplete|textCapSentences" />
         </androidx.cardview.widget.CardView>
 
         <Button
-            style="@style/GreenButtonStyle"
             android:id="@+id/searchAddIngredientButt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:backgroundTint="@color/green"
             android:text="Создать ингредиент"
             app:icon="@drawable/ic_add" />
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvIngredientSearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -24,11 +24,13 @@ class CategoryRcAdapter(private val listener: Listener,
             binding.categoryCVitem.setOnClickListener {
                 listener.onClick(category)
             }
-            binding.categoryCVitem.setOnLongClickListener {
-                binding.categoryLLItem.visibility = View.GONE
-                binding.categoryDeleteButton.visibility = View.VISIBLE
-                binding.stopButton .visibility = View.VISIBLE
-                return@setOnLongClickListener true
+            if (category.id.toInt() != 1){
+                binding.categoryCVitem.setOnLongClickListener {
+                    binding.categoryLLItem.visibility = View.GONE
+                    binding.categoryDeleteButton.visibility = View.VISIBLE
+                    binding.stopButton .visibility = View.VISIBLE
+                    return@setOnLongClickListener true
+                }
             }
 
             binding.categoryDeleteButton.setOnClickListener {

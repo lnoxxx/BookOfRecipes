@@ -46,9 +46,26 @@
         android:id="@+id/recipeReadFragment"
         android:name="com.example.bookofrecipes.fragmenst.RecipeReadFragment"
         android:label="Рецепт"
-        tools:layout="@layout/fragment_recipe_read" />
+        tools:layout="@layout/fragment_recipe_read" >
+        <action
+            android:id="@+id/action_recipeReadFragment_to_editRecipeFragment"
+            app:destination="@id/editRecipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/categoryRecipeFragment"
         android:name="com.example.bookofrecipes.fragmenst.CategoryRecipeFragment"
         android:label="Рецепты в категории" />
+    <fragment
+        android:id="@+id/editRecipeFragment"
+        android:name="com.example.bookofrecipes.fragmenst.EditRecipeFragment"
+        android:label="Редактирование рецепта" >
+        <action
+            android:id="@+id/action_editRecipeFragment_to_ingredientEditFragment"
+            app:destination="@id/ingredientEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ingredientEditFragment"
+        android:name="com.example.bookofrecipes.fragmenst.IngredientEditFragment"
+        android:label="Выбор ингредиента"
+        tools:layout="@layout/fragment_ingredient_edit" />
 </navigation>

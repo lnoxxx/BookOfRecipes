@@ -5,9 +5,16 @@
     <color name="BackgroundWhite">#F3F3F3</color>
     <color name="green">#22A35D</color>
     <color name="red">#F3422B</color>
+    <color name="yellow">#FF5591</color>
     <color name="WhiteGreen">#689C80</color>
     <color name="greenNotSelected">#000000</color>
     <color name="shadowColor">#27000000</color>
-
+    <!-- DarkTheme -->
+    <color name="BackgroundGray">#121212</color>
+    <color name="inPrimary">#313131</color>
+    <color name="DarkGray">#1B1B1B</color>
+    <color name="grey">#6C6C6C</color>
+    <color name="WhiteGrey">#D1D1D1</color>
+    <color name="WarningColor">#E4682E</color>
 
 </resources>

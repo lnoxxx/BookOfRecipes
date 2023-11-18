@@ -6,9 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
+import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.databinding.FragmentRecipeReadBinding
@@ -27,7 +31,7 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
 
 
     private var recipeID: Long = 0
-    private var recipeName: String? = "ERROR_OPEN"
+    private var recipeName: String? = ""
     private var recipeText: String? = ""
     private var recipeCategory: Long = 0
     private var categoryName: String? = ""
@@ -46,47 +50,56 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
 
         init()
 
+        binding.editButton.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putLong("recipeId", recipeID)
+            bundle.putString("recipeName", recipeName)
+            bundle.putString("recipeText", recipeText)
+            bundle.putLong ("recipeCategoryId", recipeCategory)
+            bundle.putString ("recipeCategoryName", categoryName)
+
+            setFragmentResult("editRecipe",bundle)
+            it.findNavController().navigate(R.id.editRecipeFragment)
+        }
+
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        if (recipeName == "ERROR_OPEN"){
-            fragmentManager?.popBackStack()
+        (activity as MainActivity).setBottomNavigationVisibility(false)
+        CoroutineScope(Dispatchers.IO).launch {
+            val category = database.CategoryDao().getCategoryById(recipeCategory)
+
+            ingredientArrayList.clear()
+            val ingredientsList =
+                database.recipesAndIngredientsDao().getIngredientsForRecipe(recipeID)
+
+            for (ingredient in ingredientsList){
+                val ingredientName =
+                    database.ingredientDao().getIngredientById(ingredient.ingredientId).name
+                val ingredientCount = IngredientCount(id = ingredient.ingredientId,
+                    name = ingredientName,
+                    many = ingredient.howMany)
+                ingredientArrayList.add(ingredientCount)
+            }
+            categoryName = category?.name
+
+            withContext(Dispatchers.Main){
+                binding.recipeTypeTV.text = category?.name
+                binding.ingrRecyclerView.adapter = ChoseIngredientRVAdapter(this@RecipeReadFragment ,ingredientArrayList, false)
+                binding.recipeNameTV.text = recipeName
+                binding.recipeTextTV.text = recipeText
+            }
         }
     }
 
     private fun init(){
         setFragmentResultListener("openRecipeRead"){ key, bundle ->
-
             recipeID = bundle.getLong("recipeId",0)
             recipeName = bundle.getString("recipeName")
             recipeText = bundle.getString("recipeText")
             recipeCategory = bundle.getLong("recipeCategory")
-
-            CoroutineScope(Dispatchers.IO).launch {
-                val category = database.CategoryDao().getCategoryById(recipeCategory)
-
-                val ingredientsList =
-                    database.recipesAndIngredientsDao().getIngredientsForRecipe(recipeID)
-
-                for (ingredient in ingredientsList){
-                    val ingredientName =
-                        database.ingredientDao().getIngredientById(ingredient.ingredientId).name
-                    val ingredientCount = IngredientCount(id = ingredient.id,
-                        name = ingredientName,
-                        many = ingredient.howMany)
-                    ingredientArrayList.add(ingredientCount)
-                }
-                categoryName = category?.name
-
-                withContext(Dispatchers.Main){
-                    binding.recipeTypeTV.text = category?.name
-                    binding.ingrRecyclerView.adapter = ChoseIngredientRVAdapter(this@RecipeReadFragment ,ingredientArrayList)
-                    binding.recipeNameTV.text = recipeName
-                    binding.recipeTextTV.text = recipeText
-                }
-            }
         }
     }
 

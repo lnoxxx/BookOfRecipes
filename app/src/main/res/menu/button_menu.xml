@@ -4,7 +4,7 @@
         android:id="@+id/categoriesFragment"
         android:icon="@drawable/ic_category"
         android:title="Категории"
-        android:orderInCategory="3"/>
+        android:orderInCategory="3" />
     <item
         android:id="@+id/recipesFragment"
         android:icon="@drawable/ic_recipes"
@@ -19,5 +19,5 @@
         android:id="@+id/addFragment"
         android:icon="@drawable/ic_add"
         android:title="Добавить"
-        android:orderInCategory="1"/>
+        android:orderInCategory="1" />
 </menu>

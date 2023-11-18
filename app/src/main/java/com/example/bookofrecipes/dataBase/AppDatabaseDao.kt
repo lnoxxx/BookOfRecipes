@@ -53,6 +53,9 @@ interface RecipesDao {
     @Query("SELECT * FROM recipes WHERE type = :idType")
     fun getRecipeInCategory(idType: Long?): MutableList<Recipe>
 
+    @Query("SELECT * FROM recipes WHERE isFavorite = 1")
+    fun getFavoriteRecipe(): MutableList<Recipe>
+
     @Update
     fun updateRecipe(recipe: Recipe)
 

@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Ingredient
@@ -37,9 +40,6 @@ class IngredientsFragment : Fragment(), IngredientRcAdapter.Listener {
         bindingIngredients = FragmentIngredientsBinding.inflate(inflater)
         val app = requireContext().applicationContext as Application
         database = app.database
-
-        recyclerViewInit()
-
         bindingIngredients.addIngredientButton.setOnClickListener{
             showInputDialog()
         }
@@ -66,13 +66,19 @@ class IngredientsFragment : Fragment(), IngredientRcAdapter.Listener {
         val editText = view.findViewById<EditText>(R.id.dialogeInputET)
         builder.setView(view)
         builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
-            val inputText = editText.text.toString()
-            val addIngredient = Ingredient(name = inputText)
-            CoroutineScope(Dispatchers.IO).launch {
-                database.ingredientDao().insert(addIngredient)
+            if (editText.text.toString().isEmpty()){
+                Toast.makeText(context,"Название ингредиента не может быть пустым!",Toast.LENGTH_LONG).show()
+            } else if (editText.text.toString().length > 40){
+                Toast.makeText(context,"Название ингредиента слишком длинное!",Toast.LENGTH_LONG).show()
+            } else{
+                val inputText = editText.text.toString()
+                val addIngredient = Ingredient(name = inputText)
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.ingredientDao().insert(addIngredient)
+                }
+                adapter.addIngredient(addIngredient)
+                dialog.dismiss()
             }
-            adapter.addIngredient(addIngredient)
-            dialog.dismiss()
         })
         val dialog = builder.create()
         dialog.show()
@@ -92,5 +98,9 @@ class IngredientsFragment : Fragment(), IngredientRcAdapter.Listener {
         }
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).setBottomNavigationVisibility(true)
+        recyclerViewInit()
+    }
 }

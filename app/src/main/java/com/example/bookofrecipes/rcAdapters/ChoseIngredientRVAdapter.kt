@@ -9,19 +9,22 @@ import com.example.bookofrecipes.R
 import com.example.bookofrecipes.databinding.IngredientCountItemBinding
 
 class ChoseIngredientRVAdapter(private val listener: Listener,
-                               private val dataSet: MutableList<IngredientCount>):
+                               private val dataSet: MutableList<IngredientCount>,
+                               private val menuOpen: Boolean = true):
     RecyclerView.Adapter<ChoseIngredientRVAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = IngredientCountItemBinding.bind(view)
-        fun bind(ingredientCount: IngredientCount, listener: Listener){
+        fun bind(ingredientCount: IngredientCount, listener: Listener, menuOpen: Boolean){
             binding.textView9.text = ingredientCount.name
             binding.textView10.text = ingredientCount.many
 
             binding.clearCountButton.visibility = View.GONE
-            binding.countCV.setOnLongClickListener {
-                binding.clearCountButton.visibility = View.VISIBLE
-                return@setOnLongClickListener true
+            if (menuOpen){
+                binding.countCV.setOnLongClickListener {
+                    binding.clearCountButton.visibility = View.VISIBLE
+                    return@setOnLongClickListener true
+                }
             }
             binding.clearCountButton.setOnClickListener {
                 listener.onDeleteChosenIngredient(ingredientCount)
@@ -36,7 +39,7 @@ class ChoseIngredientRVAdapter(private val listener: Listener,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataSet[position],listener)
+        holder.bind(dataSet[position],listener,menuOpen)
     }
 
     fun clearRecyclerView(){

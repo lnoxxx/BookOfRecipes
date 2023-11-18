@@ -1,78 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragmenst.AddFragment">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/saveButton"
-            style="@style/GreenButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Сохранить рецепт"
-            app:icon="@drawable/ic_save" />
-
-        <Button
-            android:id="@+id/button2"
-            style="@style/WhiteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:text="Настройки"
-            app:icon="@drawable/ic_settings" />
-
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/warningCardView"
-        style="@style/WarningCardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="12dp"
-        android:visibility="visible"
-        app:cardCornerRadius="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <ImageView
-                android:id="@+id/imageView"
-                style="@style/IconImageViewDark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|start"
-                android:layout_marginStart="16dp"
-                app:srcCompat="@drawable/ic_error" />
-
-            <TextView
-                android:id="@+id/warningText"
-                style="@style/TextViewDark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="Название рецепта не может быть пустое!"
-                android:textSize="20sp" />
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+    tools:context=".fragmenst.EditRecipeFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -81,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/saveButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,13 +21,50 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.cardview.widget.CardView
-                android:animateLayoutChanges="true"
-                android:id="@+id/recipeCardView"
+                android:id="@+id/warningCardView"
+                style="@style/WarningCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="visible"
+                app:cardCornerRadius="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        style="@style/IconImageViewDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|start"
+                        android:layout_marginStart="16dp"
+                        app:srcCompat="@drawable/ic_error" />
+
+                    <TextView
+                        android:id="@+id/warningText"
+                        style="@style/TextViewDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="Название рецепта не может быть пустое!"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 style="@style/MainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
@@ -112,17 +81,15 @@
                     android:hint="Название рецепта"
                     android:inputType="text|textAutoComplete|textCapSentences"
                     android:textSize="24sp" />
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:animateLayoutChanges="true"
                 android:id="@+id/categoryCardView"
                 style="@style/MainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
@@ -141,7 +108,7 @@
                         <TextView
                             android:id="@+id/chosenCategoryTV"
                             style="@style/TextViewMain"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="6dp"
                             android:layout_weight="1"
@@ -149,12 +116,6 @@
                             android:text="Без категории"
                             android:textSize="24sp" />
 
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            style="@style/IconImageView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_arrdown" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -167,13 +128,11 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:animateLayoutChanges="true"
-                android:id="@+id/ingredientCardView"
                 style="@style/MainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
@@ -184,7 +143,7 @@
 
                     <TextView
                         android:id="@+id/textView6"
-                        style="@style/TextViewMain"
+                        style="@style/EditTextMain"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="22dp"
@@ -195,8 +154,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/ingredRv"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginVertical="8dp" />
+                        android:layout_height="match_parent" />
 
                     <Button
                         android:id="@+id/ingredientCV"
@@ -204,19 +162,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
                         android:text="Добавить ингредиент"
-                        app:cornerRadius="16dp"
                         app:icon="@drawable/ic_add" />
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:animateLayoutChanges="true"
-                android:id="@+id/recipeTextCardView"
                 style="@style/MainCardView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
@@ -226,17 +183,26 @@
                     android:id="@+id/recipeTextET"
                     style="@style/EditTextMain"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_margin="22dp"
                     android:background="#00FFFFFF"
                     android:ems="10"
                     android:gravity="start"
-                    android:hint="Рецепт блюда \n\n\n\n\n\n"
+                    android:hint="Рецепт блюда"
                     android:inputType="text|textAutoComplete|textCapSentences|textMultiLine"
                     android:textSize="24sp" />
             </androidx.cardview.widget.CardView>
 
+            <Button
+                android:id="@+id/saveButton"
+                style="@style/GreenButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Сохранить изменения" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-</LinearLayout>
+</FrameLayout>

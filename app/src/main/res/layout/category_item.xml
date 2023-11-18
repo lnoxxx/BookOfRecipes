@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        style="@style/MainCardView"
         android:id="@+id/categoryCVitem"
         android:layout_width="182dp"
         android:layout_height="141dp"
@@ -15,12 +16,7 @@
         android:outlineAmbientShadowColor="#00FFFFFF"
         android:outlineSpotShadowColor="@color/shadowColor"
         app:cardCornerRadius="16dp"
-        app:cardElevation="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:cardElevation="15dp">
 
         <LinearLayout
             android:id="@+id/categoryLLItem"
@@ -34,9 +30,12 @@
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_folder" />
+                app:srcCompat="@drawable/ic_folder"
+                style="@style/IconImageView"
+                />
 
             <TextView
+                style="@style/TextViewMain"
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -44,31 +43,28 @@
                 android:fontFamily="sans-serif"
                 android:lineHeight="24sp"
                 android:text="Основное блюдо"
-                android:textColor="@color/black"
                 android:textSize="24sp" />
         </LinearLayout>
 
         <Button
+            style="@style/RedButtonStyle"
             android:id="@+id/categoryDeleteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/red"
             android:text="Удалить"
             android:visibility="visible"
-            app:icon="@drawable/ic_delete"
-            app:iconTint="@color/white" />
+            app:icon="@drawable/ic_delete" />
 
         <Button
+            style="@style/GreenButtonStyle"
             android:id="@+id/stopButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/green"
-            android:text="Отмена"
-            android:textColor="@color/white" />
+            android:text="Отмена" />
 
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

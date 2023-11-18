@@ -10,11 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.room.Room
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.dataBase.Category
@@ -45,6 +47,22 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
         val app = requireContext().applicationContext as Application
         database = app.database
 
+        bindingCategories.button3.setOnClickListener {
+            showInputDialog()
+        }
+
+        bindingCategories.favoriteButton.setOnClickListener {
+            val categoryBundle = Bundle()
+            categoryBundle.putBoolean("favorite?",true)
+            setFragmentResult("categoryResult",categoryBundle)
+
+            findNavController().navigate(R.id.categoryRecipeFragment)
+        }
+
+        return bindingCategories.root
+    }
+
+    private fun recyclerViewInit(){
         bindingCategories.rcCategory.layoutManager = GridLayoutManager(context,2)
         CoroutineScope(Dispatchers.IO).launch {
             val categoryList = database.CategoryDao().getAllCategories()
@@ -53,12 +71,6 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
                 bindingCategories.rcCategory.adapter = adapter
             }
         }
-
-        bindingCategories.button3.setOnClickListener {
-            showInputDialog()
-        }
-
-        return bindingCategories.root
     }
 
     private fun showInputDialog() {
@@ -72,24 +84,21 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
         builder.setView(view)
 
         builder.setPositiveButton("Добавить", DialogInterface.OnClickListener { dialog, _ ->
-            val inputText = editText.text.toString()
-
-            val database = Room.databaseBuilder(
-                requireContext(),
-                AppDatabase::class.java,
-                "my_database"
-            ).build()
-
-            val addedCategory = Category(name = inputText)
-
-            CoroutineScope(Dispatchers.IO).launch {
-                database.CategoryDao().insert(addedCategory)
-                withContext(Dispatchers.Main) {
-                    adapter.addCategory(addedCategory)
+            if (editText.text.toString().isEmpty()){
+                Toast.makeText(context,"Название категории не может быть пустым!", Toast.LENGTH_LONG).show()
+            } else if (editText.text.toString().length > 40){
+                Toast.makeText(context,"Название категории слишком длинное!", Toast.LENGTH_LONG).show()
+            }else {
+                val inputText = editText.text.toString()
+                val addedCategory = Category(name = inputText)
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.CategoryDao().insert(addedCategory)
+                    withContext(Dispatchers.Main) {
+                        adapter.addCategory(addedCategory)
+                    }
                 }
+                dialog.dismiss()
             }
-
-            dialog.dismiss()
         })
 
         val dialog = builder.create()
@@ -124,5 +133,11 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
                 adapter.deleteCategory(category)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).setBottomNavigationVisibility(true)
+        recyclerViewInit()
     }
 }

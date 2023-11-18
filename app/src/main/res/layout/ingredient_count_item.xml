@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/countCV"
+            style="@style/WhiteCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="32dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp">
 
             <LinearLayout
+                style="@style/MainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="right"
@@ -34,31 +31,31 @@
 
                 <TextView
                     android:id="@+id/textView9"
+                    style="@style/TextViewMain"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:text="Лист салата"
-                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <androidx.cardview.widget.CardView
+                    style="@style/MainCardView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="@color/BackgroundWhite"
-                    app:cardCornerRadius="32dp"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp">
 
                     <TextView
                         android:id="@+id/textView10"
+                        style="@style/TextViewMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="15 штук"
-                        android:textColor="@color/black"
                         android:textSize="16sp" />
                 </androidx.cardview.widget.CardView>
 
@@ -67,14 +64,14 @@
 
         <Button
             android:id="@+id/clearCountButton"
+            style="@style/RedButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:backgroundTint="@color/red"
             android:text="Убрать"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:cornerRadius="16dp" />
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

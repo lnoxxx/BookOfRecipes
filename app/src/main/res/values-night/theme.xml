@@ -1,0 +1,113 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BookOfRecipes" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/BackgroundGray</item>
+        <item name="android:statusBarColor">@color/BackgroundGray</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/DarkGray</item>
+    </style>
+
+
+    <!-- DialogAlert -->
+    <style name="CustomAlertDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/aler_background_dark</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomAlertDialogButtonStyle</item>
+    </style>
+    <style name="CustomAlertDialogButtonStyle">
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:backgroundTint">@color/green</item>
+        <item name="iconTint">@color/DarkGray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+
+    <!-- BottomNav -->
+    <style name="BottomNavigationViewStyle">
+        <item name="android:background">@color/DarkGray</item>
+        <item name="itemIconTint">@drawable/button_selector_night</item>
+        <item name="itemTextColor">@drawable/button_selector_night</item>
+        <item name="itemActiveIndicatorStyle">@style/CustomIndicatorStyle</item>
+    </style>
+    <style name="CustomIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/DarkGray</item>
+    </style>
+
+
+    <!-- GreenButton -->
+    <style name="GreenButtonStyle">
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:backgroundTint">@color/green</item>
+        <item name="iconTint">@color/DarkGray</item>
+    </style>
+    <!-- RedButton -->
+    <style name="RedButtonStyle">
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:backgroundTint">@color/red</item>
+        <item name="iconTint">@color/DarkGray</item>
+    </style>
+    <!-- PinkButton -->
+    <style name="PinkButtonStyle">
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:backgroundTint">@color/yellow</item>
+        <item name="iconTint">@color/DarkGray</item>
+    </style>
+    <!-- WhiteButton -->
+    <style name="WhiteButton">
+        <item name="android:textColor">@color/WhiteGrey</item>
+        <item name="android:backgroundTint">@color/inPrimary</item>
+        <item name="iconTint">@color/WhiteGrey</item>
+    </style>
+
+
+    <!-- MainCardView -->
+    <style name="MainCardView">
+        <item name="cardBackgroundColor">@color/DarkGray</item>
+    </style>
+    <!-- WhiteCardView -->
+    <style name="WhiteCardView">
+        <item name="cardBackgroundColor">@color/inPrimary</item>
+    </style>
+    <!-- GreenCardView -->
+    <style name="GreenCardView">
+        <item name="cardBackgroundColor">@color/green</item>
+    </style>
+    <!-- WarningCardView -->
+    <style name="WarningCardView">
+        <item name="cardBackgroundColor">@color/WarningColor</item>
+    </style>
+
+
+    <!-- TextView -->
+    <style name="TextViewMain">
+        <item name="android:textColor">@color/WhiteGrey</item>
+    </style>
+    <!-- TextViewDark -->
+    <style name="TextViewDark">
+        <item name="android:textColor">@color/DarkGray</item>
+    </style>
+    <!-- TextViewSecond -->
+    <style name="TextViewSecond">
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+
+    <!-- IconImageView -->
+    <style name="IconImageView">
+        <item name="tint">@color/WhiteGrey</item>
+    </style>
+    <!-- IconImageView -->
+    <style name="IconImageViewDark">
+        <item name="tint">@color/DarkGray</item>
+    </style>
+
+
+    <!-- EditTextMain -->
+    <style name="EditTextMain">
+        <item name="android:textColor">@color/WhiteGrey</item>
+        <item name="android:textColorHint">@color/grey</item>
+    </style>
+
+    <style name="Theme.BookOfRecipes" parent="Base.Theme.BookOfRecipes" />
+</resources>

@@ -1,6 +1,9 @@
 package com.example.bookofrecipes.fragmenst
 
+import android.animation.LayoutTransition
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
+import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.SharedViewModel
@@ -68,6 +72,12 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
         ingredientAdapter = ChoseIngredientRVAdapter(this, ingredientCountList)
         bindingAdd.ingredRv.adapter = ingredientAdapter
 
+        bindingAdd.categoryCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.recipeCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.recipeTextCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.ingredientCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
+
         return bindingAdd.root
     }
 
@@ -76,6 +86,12 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
         bindingAdd.ingredientCV.setOnClickListener{
             it.findNavController().navigate(R.id.searchIngredientFragment)
         }
+        (activity as MainActivity).setBottomNavigationVisibility(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        bindingAdd.warningCardView.visibility = View.GONE
     }
 
     private fun changeMenuView(){
@@ -98,10 +114,24 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
                 adapter = ChoseCategoryRecyclerViewAdapter(this@AddFragment,categoryList)
                 bindingAdd.choseCategoryRV.adapter = adapter
             }
+
+
+            
         }
     }
 
+    private fun closeWarring(){
+        Handler(Looper.getMainLooper()).postDelayed({bindingAdd.warningCardView.visibility = View.GONE}, 7000)
+    }
+
     private fun saveRecipe(){
+        val recipeCheckRes = recipeCurrencyCheck()
+        if (recipeCheckRes != "recipeCorrect"){
+            bindingAdd.warningText.text = recipeCheckRes
+            bindingAdd.warningCardView.visibility = View.VISIBLE
+            closeWarring()
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             val addedRecipe = Recipe(name = bindingAdd.nameRecipeET.text.toString(),
                 type = chosenId.toLong(),
@@ -140,5 +170,30 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
         ingredientCountList.remove(ingredientCount)
         ingredientAdapter.deleteCount(ingredientCount)
     }
+
+    private fun recipeCurrencyCheck(): String{
+        val recipeName = bindingAdd.nameRecipeET.text.toString()
+        val recipeText = bindingAdd.recipeTextET.text.toString()
+        if (recipeName.isEmpty()){
+            return "Название рецепта не может быть пустым!"
+        }
+        if (recipeName.length > 100){
+            return "Название рецепта слишком большое!"
+        }
+        if (recipeText.isEmpty()){
+            return "Рецепт блюда не может быть пустым!"
+        }
+        if (recipeText.length > 10000){
+            return "Рецепт слишком большой!"
+        }
+        if (ingredientCountList.isEmpty()){
+            return "Ваш рецепт должен иметь хотя бы 1 ингредиент!"
+        }
+        if (ingredientCountList.size > 100){
+            return "Слишком много ингредиентов!"
+        }
+        return "recipeCorrect"
+    }
+
 
 }

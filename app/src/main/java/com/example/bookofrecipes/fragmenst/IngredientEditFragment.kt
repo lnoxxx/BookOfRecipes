@@ -5,14 +5,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
@@ -29,7 +27,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener {
+
+class IngredientEditFragment : Fragment(), SearchIngredientRVAdapter.Listener {
     lateinit var binding: FragmentSearchIngredientBinding
 
     lateinit var database: AppDatabase
@@ -80,7 +79,7 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         CoroutineScope(Dispatchers.IO).launch {
             val ingredientList = database.ingredientDao().getAllIngredients()
             withContext(Dispatchers.Main){
-                adapter = SearchIngredientRVAdapter(this@SearchIngredientFragment,ingredientList)
+                adapter = SearchIngredientRVAdapter(this@IngredientEditFragment,ingredientList)
                 binding.rvIngredientSearch.adapter = adapter
             }
         }
@@ -100,22 +99,19 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         builder.setView(view)
 
         builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
-            if (editText.text.toString().isEmpty()){
-                Toast.makeText(context,"Количество ингредиента не может быть пустым!", Toast.LENGTH_LONG).show()
-            } else if (editText.text.toString().length > 40){
-                Toast.makeText(context,"Количество ингредиента слишком длинное!", Toast.LENGTH_LONG).show()
-            } else{
-                val inputText = editText.text.toString()
-                val ingredientCount = IngredientCount(
-                    id = ingredient.id,
-                    many = inputText,
-                    name = ingredient.name)
+            val inputText = editText.text.toString()
 
-                val viewModel: SharedViewModel by activityViewModels()
-                viewModel.ingredientCountList.value?.add(ingredientCount)
-                fragmentManager?.popBackStack()
-                dialog.dismiss()
-            }
+            val ingredientCount = IngredientCount(
+                id = ingredient.id,
+                many = inputText,
+                name = ingredient.name)
+
+            val viewModel: SharedViewModel by activityViewModels()
+            viewModel.ingredientEditList.value?.add(ingredientCount)
+
+            fragmentManager?.popBackStack()
+
+            dialog.dismiss()
         })
 
         val dialog = builder.create()
@@ -128,22 +124,16 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         val editText = view.findViewById<EditText>(R.id.dialogeInputET)
         builder.setView(view)
         builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
-            if (editText.text.toString().isEmpty()){
-                Toast.makeText(context,"Название ингредиента не может быть пустым!", Toast.LENGTH_LONG).show()
-            } else if (editText.text.toString().length > 40){
-                Toast.makeText(context,"Название ингредиента слишком длинное!", Toast.LENGTH_LONG).show()
-            } else{
-                val inputText = editText.text.toString()
-                val addIngredient = Ingredient(name = inputText)
-                CoroutineScope(Dispatchers.IO).launch {
-                    val ingredientId = database.ingredientDao().insert(addIngredient)
-                    val newIngredient = database.ingredientDao().getIngredientById(ingredientId)
-                    withContext(Dispatchers.Main){
-                        showInputDialog(newIngredient)
-                    }
+            val inputText = editText.text.toString()
+            val addIngredient = Ingredient(name = inputText)
+            CoroutineScope(Dispatchers.IO).launch {
+                val ingredientId = database.ingredientDao().insert(addIngredient)
+                val newIngredient = database.ingredientDao().getIngredientById(ingredientId)
+                withContext(Dispatchers.Main){
+                    showInputDialog(newIngredient)
                 }
-                dialog.dismiss()
             }
+            dialog.dismiss()
         })
         val dialog = builder.create()
         dialog.show()
