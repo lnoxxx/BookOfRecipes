@@ -6,23 +6,25 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        style="@style/MainCardView"
         android:id="@+id/cvItemList"
+        style="@style/MainCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:animateLayoutChanges="true"
         android:outlineAmbientShadowColor="#00FFFFFF"
         android:outlineSpotShadowColor="@color/shadowColor"
         app:cardCornerRadius="16dp"
-        app:cardElevation="15dp">
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <TextView
@@ -33,6 +35,13 @@
                 android:lineHeight="20sp"
                 android:text="Лист салата"
                 android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/helpIngrTV"
+                style="@style/TextViewSecond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Удерживайте, для удаления" />
 
             <Button
                 android:id="@+id/deleteIngredientButton"

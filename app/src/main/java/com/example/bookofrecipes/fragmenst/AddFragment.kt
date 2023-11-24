@@ -28,8 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, ChoseIngredientRVAdapter.Listener {
-
+class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
+    ChoseIngredientRVAdapter.Listener {
     private lateinit var bindingAdd: FragmentAddBinding
 
     private var chosenId: Int = 1
@@ -37,8 +37,7 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
     private var ingredientCountList :MutableList<IngredientCount> = mutableListOf()
 
     lateinit var adapter:ChoseCategoryRecyclerViewAdapter
-
-    lateinit var ingredientAdapter:ChoseIngredientRVAdapter
+    private lateinit var ingredientAdapter:ChoseIngredientRVAdapter
 
     private var menuOpen = false
 
@@ -48,18 +47,14 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //binding
         bindingAdd = FragmentAddBinding.inflate(inflater)
+
+        //database
         val app = requireContext().applicationContext as Application
         database = app.database
-        initChoseCategoryRV()
-        bindingAdd.categoryCardView.setOnClickListener {
-            changeMenuView()
-        }
-        bindingAdd.chosenCategoryTV.text = chosenCategoryName
-        bindingAdd.saveButton.setOnClickListener {
-            saveRecipe()
-        }
 
+        //ingredientList
         val viewModel: SharedViewModel by activityViewModels()
         if (!viewModel.ingredientCountList.isInitialized){
             viewModel.ingredientCountList.value = mutableListOf()
@@ -67,68 +62,97 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
             ingredientCountList = viewModel.ingredientCountList.value ?: mutableListOf()
         }
 
+        //ingredientRecyclerView
         bindingAdd.ingredRv.layoutManager = LinearLayoutManager(context)
-
         ingredientAdapter = ChoseIngredientRVAdapter(this, ingredientCountList)
         bindingAdd.ingredRv.adapter = ingredientAdapter
 
-        bindingAdd.categoryCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        bindingAdd.recipeCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        bindingAdd.recipeTextCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        bindingAdd.ingredientCardView .layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        //categoryRecyclerView
+        initChoseCategoryRV()
 
+        //onClickListeners
+        bindingAdd.categoryCardView.setOnClickListener {
+            changeMenuView()
+        }
+        bindingAdd.saveButton.setOnClickListener {
+            saveRecipe()
+        }
+        bindingAdd.ingredientCV.setOnClickListener{
+            it.findNavController().navigate(R.id.action_addFragment_to_searchIngredientFragment)
+        }
 
+        //defaultCategoryText
+        bindingAdd.chosenCategoryTV.text = chosenCategoryName
+
+        //animationInit
+        animationInit()
         return bindingAdd.root
     }
-
     override fun onResume() {
         super.onResume()
-        bindingAdd.ingredientCV.setOnClickListener{
-            it.findNavController().navigate(R.id.searchIngredientFragment)
-        }
         (activity as MainActivity).setBottomNavigationVisibility(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        bindingAdd.warningCardView.visibility = View.GONE
-    }
-
-    private fun changeMenuView(){
-        if (menuOpen){
-            bindingAdd.choseCategoryRV.visibility = View.GONE
-            menuOpen = false
-        } else{
+        if (chosenId == 1){
+            bindingAdd.downArrIcon.animate().apply {
+                duration = 300
+                rotationX(180f)
+            }
             bindingAdd.choseCategoryRV.visibility = View.VISIBLE
             menuOpen = true
         }
     }
+    override fun onStart() {
+        super.onStart()
+        bindingAdd.warningCardView.visibility = View.GONE
+        bindingAdd.warningLayput.visibility = View.GONE
+    }
 
+    private fun animationInit(){
+        bindingAdd.categoryCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.recipeCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.recipeTextCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.ingredientCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.warningCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        bindingAdd.warningLayput.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+    }
     private fun initChoseCategoryRV(){
         bindingAdd.choseCategoryRV.layoutManager =
             LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-
         CoroutineScope(Dispatchers.IO).launch {
             val categoryList = database.CategoryDao().getAllCategories()
             withContext(Dispatchers.Main) {
                 adapter = ChoseCategoryRecyclerViewAdapter(this@AddFragment,categoryList)
                 bindingAdd.choseCategoryRV.adapter = adapter
             }
-
-
-            
         }
     }
 
-    private fun closeWarring(){
-        Handler(Looper.getMainLooper()).postDelayed({bindingAdd.warningCardView.visibility = View.GONE}, 7000)
+    private fun changeMenuView(){
+        if (menuOpen){
+            bindingAdd.choseCategoryRV.visibility = View.GONE
+            bindingAdd.downArrIcon.animate().apply {
+                duration = 300
+                rotationX(0f)
+            }
+            menuOpen = false
+        } else{
+            bindingAdd.downArrIcon.animate().apply {
+                duration = 300
+                rotationX(180f)
+            }
+            bindingAdd.choseCategoryRV.visibility = View.VISIBLE
+            menuOpen = true
+        }
     }
-
+    private fun closeWarring(){
+        Handler(Looper.getMainLooper()).postDelayed({bindingAdd.warningCardView.visibility = View.GONE
+            bindingAdd.warningLayput .visibility = View.GONE}, 7000)
+    }
     private fun saveRecipe(){
         val recipeCheckRes = recipeCurrencyCheck()
         if (recipeCheckRes != "recipeCorrect"){
             bindingAdd.warningText.text = recipeCheckRes
             bindingAdd.warningCardView.visibility = View.VISIBLE
+            bindingAdd.warningLayput .visibility = View.VISIBLE
             closeWarring()
             return
         }
@@ -154,23 +178,22 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, Chose
             }
         }
         chosenCategoryName = "Без категории"
+        bindingAdd.chosenCategoryTV.text = chosenCategoryName
+        bindingAdd.warningCardView.visibility = View.GONE
+        bindingAdd.warningLayput .visibility = View.GONE
     }
-
     override fun onClick(category: Category) {
         chosenId = category.id.toInt()
         bindingAdd.chosenCategoryTV.text = category.name
         chosenCategoryName = category.name
-        bindingAdd.choseCategoryRV.visibility = View.GONE
-        menuOpen = false
+        changeMenuView()
     }
-
     override fun onDeleteChosenIngredient(ingredientCount: IngredientCount) {
         val viewModel: SharedViewModel by activityViewModels()
         viewModel.ingredientCountList.value?.remove(ingredientCount)
         ingredientCountList.remove(ingredientCount)
         ingredientAdapter.deleteCount(ingredientCount)
     }
-
     private fun recipeCurrencyCheck(): String{
         val recipeName = bindingAdd.nameRecipeET.text.toString()
         val recipeText = bindingAdd.recipeTextET.text.toString()

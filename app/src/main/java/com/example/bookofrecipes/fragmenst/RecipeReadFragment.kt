@@ -49,7 +49,6 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
         database = app.database
 
         init()
-
         binding.editButton.setOnClickListener {
             val bundle = Bundle()
             bundle.putLong("recipeId", recipeID)
@@ -59,7 +58,7 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
             bundle.putString ("recipeCategoryName", categoryName)
 
             setFragmentResult("editRecipe",bundle)
-            it.findNavController().navigate(R.id.editRecipeFragment)
+            it.findNavController().navigate(R.id.action_recipeReadFragment_to_editRecipeFragment)
         }
 
         return binding.root

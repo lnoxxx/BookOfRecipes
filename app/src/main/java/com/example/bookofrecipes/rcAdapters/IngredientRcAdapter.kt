@@ -9,12 +9,17 @@ import com.example.bookofrecipes.dataBase.Ingredient
 import com.example.bookofrecipes.databinding.IngredientItemBinding
 
 class IngredientRcAdapter(private val listener: Listener,
-                          private val dataSet: MutableList<Ingredient>):
+                          private var dataSet: MutableList<Ingredient>):
     RecyclerView.Adapter<IngredientRcAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = IngredientItemBinding.bind(view)
-        fun bind(ingredient: Ingredient, listener: Listener){
+        fun bind(ingredient: Ingredient, listener: Listener, position: Int){
+            if (position == 0){
+                binding.helpIngrTV.visibility = View.VISIBLE
+            } else {
+                binding.helpIngrTV.visibility = View.GONE
+            }
             binding.textView5.text = ingredient.name
             binding.deleteIngredientButton.visibility = View.GONE
             binding.cvItemList.setOnLongClickListener {
@@ -34,7 +39,7 @@ class IngredientRcAdapter(private val listener: Listener,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataSet[position], listener)
+        holder.bind(dataSet[position], listener, position)
     }
 
     override fun getItemCount(): Int {
@@ -46,7 +51,8 @@ class IngredientRcAdapter(private val listener: Listener,
         notifyDataSetChanged()
     }
 
-    fun update(){
+    fun clearSearch(newList: MutableList<Ingredient>){
+        dataSet = newList
         notifyDataSetChanged()
     }
 

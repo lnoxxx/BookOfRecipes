@@ -44,6 +44,8 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         val app = requireContext().applicationContext as Application
         database = app.database
 
+        binding.categoryRecipeRV.alpha = 0f
+
         binding.categoryRecipeRV.layoutManager = LinearLayoutManager(context)
 
         setFragmentResultListener("categoryResult"){ _, bundle ->
@@ -60,16 +62,34 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
             CoroutineScope(Dispatchers.IO).launch {
                 recipeList = database.recipeDao().getFavoriteRecipe()
                 withContext(Dispatchers.Main){
+                    if (recipeList.isEmpty()){
+                        binding.noRecipeTv.visibility = View.VISIBLE
+                    } else {
+                        binding.noRecipeTv.visibility = View.GONE
+                    }
                     adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
                     binding.categoryRecipeRV.adapter = adapter
+                    binding.categoryRecipeRV.animate().apply {
+                        duration = 120
+                        alpha(1f)
+                    }
                 }
             }
         } else{
             CoroutineScope(Dispatchers.IO).launch {
                 recipeList = database.recipeDao().getRecipeInCategory(categoryId)
                 withContext(Dispatchers.Main){
+                    if (recipeList.isEmpty()){
+                        binding.noRecipeTv.visibility = View.VISIBLE
+                    } else {
+                        binding.noRecipeTv.visibility = View.GONE
+                    }
                     adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
                     binding.categoryRecipeRV.adapter = adapter
+                    binding.categoryRecipeRV.animate().apply {
+                        duration = 120
+                        alpha(1f)
+                    }
                 }
             }
         }
@@ -85,7 +105,7 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         bundle.putLong("recipeCategory", recipe.type)
 
         setFragmentResult("openRecipeRead",bundle)
-        findNavController().navigate(R.id.recipeReadFragment)
+        findNavController().navigate(R.id.action_categoryRecipeFragment_to_recipeReadFragment)
     }
 
     override fun onDelete(recipe: Recipe) {

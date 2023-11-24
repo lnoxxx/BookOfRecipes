@@ -21,6 +21,19 @@
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
     </style>
+    <!-- DialogAlertDelete -->
+    <style name="CustomAlertDialogStyleDelete" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/aler_background_dark</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomAlertDialogButtonStyleDelete</item>
+    </style>
+    <style name="CustomAlertDialogButtonStyleDelete">
+        <item name="android:textColor">@color/DarkGray</item>
+        <item name="android:backgroundTint">@color/red</item>
+        <item name="iconTint">@color/DarkGray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
 
 
     <!-- BottomNav -->
@@ -101,12 +114,17 @@
     <style name="IconImageViewDark">
         <item name="tint">@color/DarkGray</item>
     </style>
+    <!-- IconImageView -->
+    <style name="IconImageViewSecond">
+        <item name="tint">@color/grey</item>
+    </style>
 
 
     <!-- EditTextMain -->
     <style name="EditTextMain">
         <item name="android:textColor">@color/WhiteGrey</item>
         <item name="android:textColorHint">@color/grey</item>
+        <item name="android:textColorHighlight">@color/green</item>
     </style>
 
     <style name="Theme.BookOfRecipes" parent="Base.Theme.BookOfRecipes" />

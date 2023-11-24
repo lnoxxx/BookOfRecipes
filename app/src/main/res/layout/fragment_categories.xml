@@ -7,14 +7,15 @@
     tools:context=".fragmenst.CategoriesFragment">
 
     <Button
-        style="@style/GreenButtonStyle"
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
+        style="@style/GreenButtonStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:text="Добавить категорию"
         app:cornerRadius="32dp"
         app:icon="@drawable/ic_add"
+        app:layout_constraintEnd_toStartOf="@+id/favoriteButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,15 +32,15 @@
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
     <Button
-        style="@style/PinkButtonStyle"
         android:id="@+id/favoriteButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        style="@style/PinkButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="16dp"
-        android:text="Любимое"
         app:icon="@drawable/ic_favorite"
+        app:iconGravity="textEnd"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button3"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

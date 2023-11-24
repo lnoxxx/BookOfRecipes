@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.MainActivity
@@ -44,9 +45,7 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         val app = requireContext().applicationContext as Application
         database = app.database
 
-        recyclerViewInit()
-
-        searchInit()
+        binding.rvIngredientSearch.alpha = 0f
 
         binding.searchAddIngredientButt.setOnClickListener {
             showInputDialogAddIngredient()
@@ -82,6 +81,11 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
             withContext(Dispatchers.Main){
                 adapter = SearchIngredientRVAdapter(this@SearchIngredientFragment,ingredientList)
                 binding.rvIngredientSearch.adapter = adapter
+                binding.rvIngredientSearch.animate().apply {
+                    duration = 120
+                    alpha(1f)
+                    searchInit()
+                }
             }
         }
     }
@@ -102,7 +106,7 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
         builder.setPositiveButton(R.string.dialoge_add_button, DialogInterface.OnClickListener { dialog, _ ->
             if (editText.text.toString().isEmpty()){
                 Toast.makeText(context,"Количество ингредиента не может быть пустым!", Toast.LENGTH_LONG).show()
-            } else if (editText.text.toString().length > 40){
+            } else if (editText.text.toString().length > 15){
                 Toast.makeText(context,"Количество ингредиента слишком длинное!", Toast.LENGTH_LONG).show()
             } else{
                 val inputText = editText.text.toString()
@@ -110,10 +114,9 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
                     id = ingredient.id,
                     many = inputText,
                     name = ingredient.name)
-
                 val viewModel: SharedViewModel by activityViewModels()
                 viewModel.ingredientCountList.value?.add(ingredientCount)
-                fragmentManager?.popBackStack()
+                findNavController().popBackStack()
                 dialog.dismiss()
             }
         })
@@ -152,5 +155,6 @@ class SearchIngredientFragment : Fragment(), SearchIngredientRVAdapter.Listener 
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).setBottomNavigationVisibility(false)
+        recyclerViewInit()
     }
 }

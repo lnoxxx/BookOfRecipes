@@ -15,13 +15,23 @@ class ChoseIngredientRVAdapter(private val listener: Listener,
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = IngredientCountItemBinding.bind(view)
-        fun bind(ingredientCount: IngredientCount, listener: Listener, menuOpen: Boolean){
+        fun bind(ingredientCount: IngredientCount,
+                 listener: Listener,
+                 menuOpen: Boolean,
+                 position: Int){
             binding.textView9.text = ingredientCount.name
             binding.textView10.text = ingredientCount.many
 
+            binding.helpTV.visibility = View.GONE
             binding.clearCountButton.visibility = View.GONE
             if (menuOpen){
+                if (position == 0){
+                    binding.helpTV.visibility = View.VISIBLE
+                } else{
+                    binding.helpTV.visibility = View.GONE
+                }
                 binding.countCV.setOnLongClickListener {
+                    binding.helpTV.visibility = View.GONE
                     binding.clearCountButton.visibility = View.VISIBLE
                     return@setOnLongClickListener true
                 }
@@ -39,7 +49,7 @@ class ChoseIngredientRVAdapter(private val listener: Listener,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataSet[position],listener,menuOpen)
+        holder.bind(dataSet[position],listener,menuOpen, position)
     }
 
     fun clearRecyclerView(){

@@ -66,6 +66,8 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             saveRecipe()
         }
 
+        binding.mainEditLinearLayout.alpha = 0f
+
         val viewModel: SharedViewModel by activityViewModels()
         if (!viewModel.ingredientEditList.isInitialized){
             viewModel.ingredientEditList.value = mutableListOf()
@@ -109,9 +111,13 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
     override fun onResume() {
         super.onResume()
         binding.ingredientCV.setOnClickListener{
-            it.findNavController().navigate(R.id.ingredientEditFragment)
+            it.findNavController().navigate(R.id.action_editRecipeFragment_to_ingredientEditFragment)
         }
         (activity as MainActivity).setBottomNavigationVisibility(false)
+        binding.mainEditLinearLayout.animate().apply {
+            duration = 120
+            alpha(1f)
+        }
     }
 
     private fun changeMenuView(){
@@ -166,18 +172,12 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             }
             ingredientCountList.clear()
             withContext(Dispatchers.Main){
-                binding.nameRecipeET.text.clear()
-                chosenId = 1
-                binding.recipeTextET.text.clear()
-                ingredientAdapter.clearRecyclerView()
-
                 val bundle = Bundle()
                 bundle.putLong("recipeId",changedRecipe.id)
                 bundle.putString("recipeName", changedRecipe.name)
                 bundle.putString("recipeText", changedRecipe.recipeText)
                 bundle.putLong("recipeCategory", changedRecipe.type.toLong())
                 setFragmentResult("openRecipeRead",bundle)
-
                 findNavController().popBackStack()
             }
         }

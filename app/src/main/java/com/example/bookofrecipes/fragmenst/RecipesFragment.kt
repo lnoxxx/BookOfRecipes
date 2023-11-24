@@ -1,13 +1,15 @@
 package com.example.bookofrecipes.fragmenst
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -16,6 +18,7 @@ import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.MainActivity
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.AppDatabase
+import com.example.bookofrecipes.dataBase.Ingredient
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.FragmentRecipesBinding
 import com.example.bookofrecipes.rcAdapters.RecipeRecyclerViewAdapter
@@ -25,7 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
-
     private lateinit var bindingRecipes: FragmentRecipesBinding
 
     lateinit var database: AppDatabase
@@ -36,13 +38,20 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //binding
         bindingRecipes = FragmentRecipesBinding.inflate(inflater)
-        adapter = RecipeRecyclerViewAdapter(this, mutableListOf())
-
+        //database
         val app = requireContext().applicationContext as Application
         database = app.database
-
+        //init
+        recyclerViewInit()
         return bindingRecipes.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).setBottomNavigationVisibility(true)
+        bindingRecipes.searchRecipeEditText.text.clear()
     }
 
     private fun recyclerViewInit(){
@@ -50,18 +59,39 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         CoroutineScope(Dispatchers.IO).launch {
             val recipeArray = database.recipeDao().getAllRecipes()
             withContext(Dispatchers.Main){
+                if (recipeArray.isEmpty()){
+                    bindingRecipes.noRecipeTV.visibility = View.VISIBLE
+                } else {
+                    bindingRecipes.noRecipeTV.visibility = View.GONE
+                }
                 adapter = RecipeRecyclerViewAdapter(this@RecipesFragment,recipeArray)
                 bindingRecipes.recipeRecyclerView.adapter = adapter
+                searchInit()
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).setBottomNavigationVisibility(true)
-        recyclerViewInit()
-        searchInit()
-        bindingRecipes.searchRecipeEditText.text.clear()
+    private fun showDeleteDialog(recipe: Recipe) {
+        val builder = AlertDialog.Builder(context,R.style.CustomAlertDialogStyleDelete)
+        val view = layoutInflater.inflate(R.layout.dialog_delete, null)
+        val title = view.findViewById<TextView>(R.id.deleteTitle)
+        title.text = "Удалить рецепт?"
+        builder.setView(view)
+        builder.setPositiveButton("Удалить",) { dialog, _ ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val recipeIngredientList = database.recipesAndIngredientsDao().getIngredientsForRecipe(recipe.id)
+                for (recipeIngredient in recipeIngredientList){
+                    database.recipesAndIngredientsDao().deleteRecipeAndIngredient(recipeIngredient)
+                }
+                database.recipeDao().deleteRecipe(recipe)
+                withContext(Dispatchers.Main){
+                    adapter.deleteRecipe(recipe)
+                }
+            }
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun searchInit(){
@@ -80,7 +110,6 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
             override fun afterTextChanged(s: Editable?) {
             }
         }
-
         bindingRecipes.searchRecipeEditText.addTextChangedListener(textWatcher)
     }
 
@@ -89,23 +118,13 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         bundle.putLong("recipeId",recipe.id)
         bundle.putString("recipeName", recipe.name)
         bundle.putString("recipeText", recipe.recipeText)
-        bundle.putLong("recipeCategory", recipe.type.toLong())
-
+        bundle.putLong("recipeCategory", recipe.type)
         setFragmentResult("openRecipeRead",bundle)
-        findNavController().navigate(R.id.recipeReadFragment)
+        findNavController().navigate(R.id.action_recipesFragment_to_recipeReadFragment)
     }
 
     override fun onDelete(recipe: Recipe) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val recipeIngredientList = database.recipesAndIngredientsDao().getIngredientsForRecipe(recipe.id)
-            for (recipeIngredient in recipeIngredientList){
-                database.recipesAndIngredientsDao().deleteRecipeAndIngredient(recipeIngredient)
-            }
-            database.recipeDao().deleteRecipe(recipe)
-            withContext(Dispatchers.Main){
-                adapter.deleteRecipe(recipe)
-            }
-        }
+        showDeleteDialog(recipe)
     }
 
     override fun onMakeFavorite(recipe: Recipe) {
@@ -133,7 +152,5 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
             database.recipeDao().updateRecipe(newRecipe)
         }
     }
-
-
 
 }

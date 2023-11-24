@@ -27,7 +27,7 @@ interface IngredientDao {
 @Dao
 interface CategoryDao {
     @Insert
-    suspend fun insert(category: Category)
+    suspend fun insert(category: Category): Long
 
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): MutableList<Category>

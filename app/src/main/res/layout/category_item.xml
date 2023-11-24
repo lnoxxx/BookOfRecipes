@@ -2,21 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        style="@style/MainCardView"
         android:id="@+id/categoryCVitem"
-        android:layout_width="182dp"
+        style="@style/MainCardView"
+        android:layout_width="match_parent"
         android:layout_height="141dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
+        android:animateLayoutChanges="true"
         android:outlineAmbientShadowColor="#00FFFFFF"
         android:outlineSpotShadowColor="@color/shadowColor"
         app:cardCornerRadius="16dp"
-        app:cardElevation="15dp">
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:id="@+id/categoryLLItem"
@@ -24,19 +25,19 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imageView4"
+                style="@style/IconImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_folder"
-                style="@style/IconImageView"
-                />
+                app:srcCompat="@drawable/ic_folder" />
 
             <TextView
-                style="@style/TextViewMain"
                 android:id="@+id/textView3"
+                style="@style/TextViewMain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
@@ -47,22 +48,25 @@
         </LinearLayout>
 
         <Button
-            style="@style/RedButtonStyle"
             android:id="@+id/categoryDeleteButton"
+            style="@style/RedButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Удалить"
+            android:animateLayoutChanges="true"
             android:visibility="visible"
-            app:icon="@drawable/ic_delete" />
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp" />
 
         <Button
-            style="@style/GreenButtonStyle"
             android:id="@+id/stopButton"
+            style="@style/GreenButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_margin="16dp"
+            android:animateLayoutChanges="true"
             android:text="Отмена" />
 
     </androidx.cardview.widget.CardView>

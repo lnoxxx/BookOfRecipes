@@ -1,5 +1,6 @@
 package com.example.bookofrecipes.rcAdapters
 
+import android.animation.LayoutTransition
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,8 @@ class RecipeRecyclerViewAdapter(private val listener: Listener,
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val binding = RecipeItemBinding.bind(view)
-        fun bind(recipe: Recipe,listener: Listener,menuOpen: Boolean){
+        fun bind(recipe: Recipe,listener: Listener,menuOpen: Boolean, position: Int){
+            binding.recipeCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
             if (recipe.isFavorite){
                 binding.unsetFavorite.visibility = View.VISIBLE
                 binding.setFavorite.visibility = View.GONE
@@ -38,8 +40,15 @@ class RecipeRecyclerViewAdapter(private val listener: Listener,
             binding.deleteRecipeButton.setOnClickListener {
                 listener.onDelete(recipe)
             }
+            binding.helpingTv.visibility = View.GONE
             if (menuOpen){
+                if (position == 0){
+                    binding.helpingTv.visibility = View.VISIBLE
+                } else {
+                    binding.helpingTv.visibility = View.GONE
+                }
                 binding.recipeCardView.setOnLongClickListener {
+                    binding.helpingTv.visibility = View.GONE
                     binding.recipeSettingsMenu.visibility = View.VISIBLE
                     return@setOnLongClickListener true
                 }
@@ -71,7 +80,7 @@ class RecipeRecyclerViewAdapter(private val listener: Listener,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(recipeList[position],listener, menuOpen)
+        holder.bind(recipeList[position],listener, menuOpen, position)
     }
 
     fun clearSearch(newList: MutableList<Recipe>){

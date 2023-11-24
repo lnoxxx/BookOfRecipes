@@ -6,24 +6,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iconDialogeIV"
-        style="@style/IconImageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        app:srcCompat="@drawable/ic_delete" />
-
     <TextView
-        android:id="@+id/dialogeTextDeleteTV"
+        android:id="@+id/deleteTitle"
         style="@style/TextViewMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="24dp"
         android:layout_weight="1"
         android:lineHeight="34sp"
         android:text="Удалить ингредиент?"
         android:textAlignment="center"
         android:textSize="34sp" />
+
 </LinearLayout>

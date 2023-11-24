@@ -6,8 +6,8 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        style="@style/GreenCardView"
         android:id="@+id/choseCategoryCV"
+        style="@style/WhiteCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,8 +20,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            style="@style/TextViewDark"
             android:id="@+id/textView2"
+            style="@style/TextViewMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"

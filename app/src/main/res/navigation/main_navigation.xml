@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/addFragment">
+    app:startDestination="@id/recipesFragment">
 
     <fragment
         android:id="@+id/ingredientsFragment"
@@ -17,7 +17,11 @@
         tools:layout="@layout/fragment_categories" >
         <action
             android:id="@+id/action_categoriesFragment_to_categoryRecipeFragment2"
-            app:destination="@id/categoryRecipeFragment" />
+            app:destination="@id/categoryRecipeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -26,7 +30,11 @@
         tools:layout="@layout/fragment_add" >
         <action
             android:id="@+id/action_addFragment_to_searchIngredientFragment"
-            app:destination="@id/searchIngredientFragment" />
+            app:destination="@id/searchIngredientFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_down"
+            app:popExitAnim="@anim/slide_out_up" />
     </fragment>
     <fragment
         android:id="@+id/recipesFragment"
@@ -35,7 +43,11 @@
         tools:layout="@layout/fragment_recipes" >
         <action
             android:id="@+id/action_recipesFragment_to_recipeReadFragment"
-            app:destination="@id/recipeReadFragment" />
+            app:destination="@id/recipeReadFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/searchIngredientFragment"
@@ -54,14 +66,26 @@
     <fragment
         android:id="@+id/categoryRecipeFragment"
         android:name="com.example.bookofrecipes.fragmenst.CategoryRecipeFragment"
-        android:label="Рецепты в категории" />
+        android:label="Рецепты в категории" >
+        <action
+            android:id="@+id/action_categoryRecipeFragment_to_recipeReadFragment"
+            app:destination="@id/recipeReadFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/editRecipeFragment"
         android:name="com.example.bookofrecipes.fragmenst.EditRecipeFragment"
         android:label="Редактирование рецепта" >
         <action
             android:id="@+id/action_editRecipeFragment_to_ingredientEditFragment"
-            app:destination="@id/ingredientEditFragment" />
+            app:destination="@id/ingredientEditFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_down"
+            app:popExitAnim="@anim/slide_out_up" />
     </fragment>
     <fragment
         android:id="@+id/ingredientEditFragment"
