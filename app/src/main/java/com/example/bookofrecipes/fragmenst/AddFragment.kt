@@ -1,15 +1,22 @@
 package com.example.bookofrecipes.fragmenst
 
 import android.animation.LayoutTransition
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.Intent
+import android.content.UriPermission
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bookofrecipes.Application
 import com.example.bookofrecipes.MainActivity
@@ -23,11 +30,14 @@ import com.example.bookofrecipes.dataBase.RecipesAndIngredients
 import com.example.bookofrecipes.databinding.FragmentAddBinding
 import com.example.bookofrecipes.rcAdapters.ChoseCategoryRecyclerViewAdapter
 import com.example.bookofrecipes.rcAdapters.ChoseIngredientRVAdapter
+import com.example.bookofrecipes.saveImageToInternalStorage
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+const val PICK_IMAGE_REQUEST = 1
 class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
     ChoseIngredientRVAdapter.Listener {
     private lateinit var bindingAdd: FragmentAddBinding
@@ -40,6 +50,9 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
     private lateinit var ingredientAdapter:ChoseIngredientRVAdapter
 
     private var menuOpen = false
+
+    private var photoUri: String? = null
+    private var photoPath: String? = null
 
     lateinit var database: AppDatabase
 
@@ -80,6 +93,9 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
         bindingAdd.ingredientCV.setOnClickListener{
             it.findNavController().navigate(R.id.action_addFragment_to_searchIngredientFragment)
         }
+        bindingAdd.addPhotoCardView.setOnClickListener {
+            photoAdd()
+        }
 
         //defaultCategoryText
         bindingAdd.chosenCategoryTV.text = chosenCategoryName
@@ -90,7 +106,7 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
     }
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).setBottomNavigationVisibility(true)
+        (activity as MainActivity).setBottomNavigationVisibility(false)
         if (chosenId == 1){
             bindingAdd.downArrIcon.animate().apply {
                 duration = 300
@@ -98,6 +114,9 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
             }
             bindingAdd.choseCategoryRV.visibility = View.VISIBLE
             menuOpen = true
+        }
+        if (photoUri!=null){
+            Picasso.get().load(Uri.parse(photoUri)).into(bindingAdd.recipeImage)
         }
     }
     override fun onStart() {
@@ -126,6 +145,27 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
         }
     }
 
+    // Загрузка фоток
+    private fun photoAdd(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "image/*"
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            val selectedImageUri: Uri? = data.data
+            photoUri = selectedImageUri.toString()
+            if (selectedImageUri != null && context!=null){
+                photoPath = saveImageToInternalStorage(requireContext(),selectedImageUri)
+            }
+//            bindingAdd.addPhotoCardView.visibility = View.GONE
+//            bindingAdd.imageCardView.visibility = View.VISIBLE
+            Picasso.get().load(selectedImageUri).into(bindingAdd.recipeImage)
+        }
+    }
+
     private fun changeMenuView(){
         if (menuOpen){
             bindingAdd.choseCategoryRV.visibility = View.GONE
@@ -145,7 +185,7 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
     }
     private fun closeWarring(){
         Handler(Looper.getMainLooper()).postDelayed({bindingAdd.warningCardView.visibility = View.GONE
-            bindingAdd.warningLayput .visibility = View.GONE}, 7000)
+            bindingAdd.warningLayput .visibility = View.GONE}, 5000)
     }
     private fun saveRecipe(){
         val recipeCheckRes = recipeCurrencyCheck()
@@ -160,7 +200,8 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
             val addedRecipe = Recipe(name = bindingAdd.nameRecipeET.text.toString(),
                 type = chosenId.toLong(),
                 recipeText = bindingAdd.recipeTextET.text.toString(),
-                isFavorite = false
+                isFavorite = false,
+                photoId = photoPath
             )
             val id = database.recipeDao().insert(addedRecipe)
             for (ingredient in ingredientCountList){
@@ -175,12 +216,9 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
                 chosenId = 1
                 bindingAdd.recipeTextET.text.clear()
                 ingredientAdapter.clearRecyclerView()
+                findNavController().popBackStack()
             }
         }
-        chosenCategoryName = "Без категории"
-        bindingAdd.chosenCategoryTV.text = chosenCategoryName
-        bindingAdd.warningCardView.visibility = View.GONE
-        bindingAdd.warningLayput .visibility = View.GONE
     }
     override fun onClick(category: Category) {
         chosenId = category.id.toInt()
@@ -201,13 +239,13 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
             return "Название рецепта не может быть пустым!"
         }
         if (recipeName.length > 100){
-            return "Название рецепта слишком большое!"
+            return "Название рецепта слишком длинное!"
         }
         if (recipeText.isEmpty()){
-            return "Рецепт блюда не может быть пустым!"
+            return "Способ приготовления не может быть пустым!"
         }
-        if (recipeText.length > 10000){
-            return "Рецепт слишком большой!"
+        if (recipeText.length > 20000){
+            return "Способ приготовления слишком большой(без понятия как вы смогли написать больше 20к символов)"
         }
         if (ingredientCountList.isEmpty()){
             return "Ваш рецепт должен иметь хотя бы 1 ингредиент!"
@@ -218,5 +256,8 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
         return "recipeCorrect"
     }
 
-
+    override fun onDetach() {
+        super.onDetach()
+        ingredientCountList.clear()
+    }
 }

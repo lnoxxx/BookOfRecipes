@@ -1,60 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvItemList"
         style="@style/MainCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:layout_weight="1"
         android:animateLayoutChanges="true"
         android:outlineAmbientShadowColor="#00FFFFFF"
         android:outlineSpotShadowColor="@color/shadowColor"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/TextViewMain"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="16dp"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView5"
-                style="@style/TextViewMain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineHeight="20sp"
-                android:text="Лист салата"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/helpIngrTV"
-                style="@style/TextViewSecond"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Удерживайте, для удаления" />
-
-            <Button
-                android:id="@+id/deleteIngredientButton"
-                style="@style/RedButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginTop="8dp"
-                android:text="Удалить"
-                app:icon="@drawable/ic_delete" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:lineHeight="20sp"
+            android:singleLine="true"
+            android:text="Лист салата"
+            android:textSize="20sp" />
 
     </androidx.cardview.widget.CardView>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/deleteIngredientButton"
+        style="@style/RedButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Удалить"
+        app:cornerRadius="16dp"
+        app:icon="@drawable/ic_delete" />
+
+</LinearLayout>

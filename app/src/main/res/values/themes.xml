@@ -72,6 +72,11 @@
         <item name="android:backgroundTint">#E8E8E8</item>
         <item name="iconTint">@color/black</item>
     </style>
+    <style name="TrueWhiteButton">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:backgroundTint">#FFFFFF</item>
+        <item name="iconTint">@color/black</item>
+    </style>
 
 
     <!-- MainCardView -->
@@ -129,6 +134,10 @@
     <!-- IconImageView -->
     <style name="IconImageViewSecond">
         <item name="tint">@color/grey</item>
+    </style>
+    <!-- IconImageViewPink -->
+    <style name="IconImageViewPink">
+        <item name="tint">@color/yellow</item>
     </style>
 
 

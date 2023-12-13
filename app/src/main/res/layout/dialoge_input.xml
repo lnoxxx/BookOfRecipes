@@ -23,7 +23,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:lineHeight="34sp"
-            android:text="Добавить инградиент"
+            android:text="Добавить ингредиент"
             android:textAlignment="center"
             android:textSize="34sp" />
 

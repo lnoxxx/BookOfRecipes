@@ -140,7 +140,6 @@ class IngredientsFragment : Fragment(), IngredientRcAdapter.Listener {
         bindingIngredients.editTextText3.addTextChangedListener(textWatcher)
     }
 
-
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).setBottomNavigationVisibility(true)

@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.com.fasterxml.jackson.core.JsonPointer.compile
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -51,6 +53,9 @@ dependencies {
     //navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    //picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
+
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

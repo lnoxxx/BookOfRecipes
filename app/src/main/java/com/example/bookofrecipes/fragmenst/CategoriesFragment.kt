@@ -83,7 +83,9 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
                             name = recipe.name,
                             type = 1,
                             recipeText = recipe.recipeText,
-                            isFavorite = recipe.isFavorite)
+                            isFavorite = recipe.isFavorite,
+                            photoId = recipe.photoId
+                        )
                         database.recipeDao().updateRecipe(changedRecipe)
                     }
                     database.CategoryDao().deleteCategory(category)

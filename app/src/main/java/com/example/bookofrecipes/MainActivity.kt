@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         if ((binding.navController.visibility == View.GONE) && (!isVisible)){
             return
         }
-
         if (isVisible){
             binding.navController.visibility = View.VISIBLE
         } else {
@@ -87,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         val conf = AppBarConfiguration(
             setOf(
                 R.id.recipesFragment,
-                R.id.addFragment,
                 R.id.ingredientsFragment,
                 R.id.categoriesFragment
             )

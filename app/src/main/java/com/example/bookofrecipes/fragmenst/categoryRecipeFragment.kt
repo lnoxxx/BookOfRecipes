@@ -67,7 +67,7 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                     } else {
                         binding.noRecipeTv.visibility = View.GONE
                     }
-                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
+                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false, requireContext())
                     binding.categoryRecipeRV.adapter = adapter
                     binding.categoryRecipeRV.animate().apply {
                         duration = 120
@@ -84,7 +84,7 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                     } else {
                         binding.noRecipeTv.visibility = View.GONE
                     }
-                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false)
+                    adapter = RecipeRecyclerViewAdapter(this@CategoryRecipeFragment,recipeList, false, requireContext())
                     binding.categoryRecipeRV.adapter = adapter
                     binding.categoryRecipeRV.animate().apply {
                         duration = 120
@@ -103,7 +103,7 @@ class CategoryRecipeFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         bundle.putString("recipeName", recipe.name)
         bundle.putString("recipeText", recipe.recipeText)
         bundle.putLong("recipeCategory", recipe.type)
-
+        bundle.putString("recipePhoto", recipe.photoId)
         setFragmentResult("openRecipeRead",bundle)
         findNavController().navigate(R.id.action_categoryRecipeFragment_to_recipeReadFragment)
     }

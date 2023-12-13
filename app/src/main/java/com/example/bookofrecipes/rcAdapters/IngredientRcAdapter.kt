@@ -15,11 +15,6 @@ class IngredientRcAdapter(private val listener: Listener,
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val binding = IngredientItemBinding.bind(view)
         fun bind(ingredient: Ingredient, listener: Listener, position: Int){
-            if (position == 0){
-                binding.helpIngrTV.visibility = View.VISIBLE
-            } else {
-                binding.helpIngrTV.visibility = View.GONE
-            }
             binding.textView5.text = ingredient.name
             binding.deleteIngredientButton.visibility = View.GONE
             binding.cvItemList.setOnLongClickListener {

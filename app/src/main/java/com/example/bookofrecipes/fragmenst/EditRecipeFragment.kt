@@ -1,5 +1,9 @@
 package com.example.bookofrecipes.fragmenst
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +12,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
@@ -27,10 +33,13 @@ import com.example.bookofrecipes.databinding.FragmentAddBinding
 import com.example.bookofrecipes.databinding.FragmentEditRecipeBinding
 import com.example.bookofrecipes.rcAdapters.ChoseCategoryRecyclerViewAdapter
 import com.example.bookofrecipes.rcAdapters.ChoseIngredientRVAdapter
+import com.example.bookofrecipes.saveImageToInternalStorage
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener, ChoseIngredientRVAdapter.Listener  {
 
@@ -46,9 +55,13 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
 
     private var menuOpen = false
 
+    var isFavorite: Boolean = false
+
     lateinit var database: AppDatabase
 
     var recipeID: Long = 0
+
+    private var recipePhoto: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +79,9 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             saveRecipe()
         }
 
+        binding.addPhotoCardView.setOnClickListener {
+            photoAdd()
+        }
         binding.mainEditLinearLayout.alpha = 0f
 
         val viewModel: SharedViewModel by activityViewModels()
@@ -87,6 +103,11 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             chosenCategoryName = bundle.getString("recipeCategoryName")
             binding.chosenCategoryTV.text = chosenCategoryName
             binding.recipeTextET.setText(bundle.getString("recipeText"))
+            recipePhoto = bundle.getString("recipePhoto")
+            if (recipePhoto != null){
+                val uri = getFileUri(requireContext() , recipePhoto!!)
+                Picasso.get().load(uri).into(binding.recipeImage)
+            }
 
             ingredientCountList.clear()
             CoroutineScope(Dispatchers.IO).launch {
@@ -108,6 +129,15 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
         return binding.root
     }
 
+    private fun getFileUri(context: Context, filePath: String): Uri {
+        val file = File(filePath)
+        return FileProvider.getUriForFile(
+            context,
+            context.packageName + ".provider",
+            file
+        )
+    }
+
     override fun onResume() {
         super.onResume()
         binding.ingredientCV.setOnClickListener{
@@ -117,6 +147,10 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
         binding.mainEditLinearLayout.animate().apply {
             duration = 120
             alpha(1f)
+        }
+        if (recipePhoto != null){
+            val uri = getFileUri(requireContext() , recipePhoto!!)
+            Picasso.get().load(uri).into(binding.recipeImage)
         }
     }
 
@@ -157,7 +191,8 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
                 name = binding.nameRecipeET.text.toString(),
                 type = chosenId,
                 recipeText = binding.recipeTextET.text.toString(),
-                isFavorite = false
+                isFavorite = isFavorite,
+                photoId = recipePhoto
             )
             database.recipeDao().updateRecipe(changedRecipe)
             val oldIngredients = database.recipesAndIngredientsDao().getIngredientsForRecipe(recipeID)
@@ -177,7 +212,9 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
                 bundle.putString("recipeName", changedRecipe.name)
                 bundle.putString("recipeText", changedRecipe.recipeText)
                 bundle.putLong("recipeCategory", changedRecipe.type.toLong())
+                bundle.putString("recipePhoto", changedRecipe.photoId)
                 setFragmentResult("openRecipeRead",bundle)
+                Toast.makeText(context, "Изменения сохранены", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
         }
@@ -230,6 +267,26 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
 
     private fun closeWarring(){
         Handler(Looper.getMainLooper()).postDelayed({binding.warningCardView.visibility = View.GONE}, 7000)
+    }
+
+    private fun photoAdd(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "image/*"
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            val selectedImageUri: Uri? = data.data
+            val photoUri = selectedImageUri.toString()
+            if (selectedImageUri != null && context!=null){
+                recipePhoto = saveImageToInternalStorage(requireContext(),selectedImageUri)
+            }
+//            bindingAdd.addPhotoCardView.visibility = View.GONE
+//            bindingAdd.imageCardView.visibility = View.VISIBLE
+            Picasso.get().load(selectedImageUri).into(binding.recipeImage)
+        }
     }
 
 }

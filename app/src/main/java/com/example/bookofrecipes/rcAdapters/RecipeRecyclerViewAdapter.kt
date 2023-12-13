@@ -1,72 +1,80 @@
 package com.example.bookofrecipes.rcAdapters
 
 import android.animation.LayoutTransition
+import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookofrecipes.R
 import com.example.bookofrecipes.dataBase.Recipe
 import com.example.bookofrecipes.databinding.RecipeItemBinding
+import com.squareup.picasso.Picasso
+import java.io.File
 
 class RecipeRecyclerViewAdapter(private val listener: Listener,
                                 private var recipeList: MutableList<Recipe>,
-                                private val menuOpen: Boolean = true):
+                                private val menuOpen: Boolean = true,
+                                val context: Context):
     RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view){
+
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val binding = RecipeItemBinding.bind(view)
         fun bind(recipe: Recipe,listener: Listener,menuOpen: Boolean, position: Int){
-            binding.recipeCardView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-            if (recipe.isFavorite){
-                binding.unsetFavorite.visibility = View.VISIBLE
-                binding.setFavorite.visibility = View.GONE
-                binding.favIndCardVIew.visibility = View.VISIBLE
-            } else{
-                binding.unsetFavorite.visibility = View.GONE
-                binding.setFavorite.visibility = View.VISIBLE
-                binding.favIndCardVIew.visibility = View.GONE
-            }
+            binding.recipeMenuLinearLayout.visibility = View.GONE
             binding.textView11.text = recipe.name
-            binding.recipeSettingsMenu.visibility = View.GONE
-            var recipeText = recipe.recipeText
-            if (recipeText.length > 40){
-                recipeText = recipeText.take(40) + "..."
+            if(recipe.photoId != null){
+                binding.recipeImageInList.visibility = View.VISIBLE
+                val uri = getFileUri(context,recipe.photoId)
+                Picasso.get().load(uri).into(binding.recipeImageInList)
+            }else{
+                binding.recipeImageInList.visibility = View.GONE
             }
-            binding.textView4.text = recipeText
-            binding.recipeCardView.setOnClickListener{
-                listener.onClick(recipe)
-            }
-            binding.deleteRecipeButton.setOnClickListener {
-                listener.onDelete(recipe)
-            }
-            binding.helpingTv.visibility = View.GONE
             if (menuOpen){
-                if (position == 0){
-                    binding.helpingTv.visibility = View.VISIBLE
-                } else {
-                    binding.helpingTv.visibility = View.GONE
+                if (recipe.isFavorite){
+                    changeFavVisibility(true)
+                } else{
+                    changeFavVisibility(false)
+                }
+                binding.unfavImage.setOnClickListener {
+                    listener.onMakeFavorite(recipe)
+                    changeFavVisibility(true)
+                }
+                binding.favImage.setOnClickListener {
+                    listener.onDeleteInFavorite(recipe)
+                    changeFavVisibility(false)
                 }
                 binding.recipeCardView.setOnLongClickListener {
-                    binding.helpingTv.visibility = View.GONE
-                    binding.recipeSettingsMenu.visibility = View.VISIBLE
+                    binding.recipeMenuLinearLayout.visibility = View.VISIBLE
+                    binding.deleteButton.setOnClickListener {
+                        listener.onDelete(recipe)
+                    }
                     return@setOnLongClickListener true
                 }
             }
-            binding.setFavorite.setOnClickListener {
-                binding.recipeSettingsMenu.visibility = View.GONE
-                binding.unsetFavorite.visibility = View.VISIBLE
-                binding.setFavorite.visibility = View.GONE
-                binding.favIndCardVIew.visibility = View.VISIBLE
-                listener.onMakeFavorite(recipe)
+            binding.recipeCardView.setOnClickListener{
+                listener.onClick(recipe)
             }
-            binding.unsetFavorite.setOnClickListener {
-                binding.recipeSettingsMenu.visibility = View.GONE
-                binding.unsetFavorite.visibility = View.GONE
-                binding.setFavorite.visibility = View.VISIBLE
-                binding.favIndCardVIew.visibility = View.GONE
-                listener.onDeleteInFavorite(recipe)
+        }
+        private fun changeFavVisibility(favorite: Boolean){
+            if (favorite){
+                binding.favImage.visibility = View.VISIBLE
+                binding.unfavImage.visibility = View.GONE
+            } else{
+                binding.favImage.visibility = View.GONE
+                binding.unfavImage.visibility = View.VISIBLE
             }
+        }
+        private fun getFileUri(context: Context, filePath: String): Uri {
+            val file = File(filePath)
+            return FileProvider.getUriForFile(
+                context,
+                context.packageName + ".provider",
+                file
+            )
         }
     }
 

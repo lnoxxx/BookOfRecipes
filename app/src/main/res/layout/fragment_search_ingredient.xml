@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            app:cardCornerRadius="32dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp">
 
             <EditText
@@ -36,12 +36,15 @@
         </androidx.cardview.widget.CardView>
 
         <Button
-            style="@style/GreenButtonStyle"
             android:id="@+id/searchAddIngredientButt"
+            style="@style/GreenButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="Создать ингредиент"
+            app:cornerRadius="16dp"
             app:icon="@drawable/ic_add" />
 
     </LinearLayout>

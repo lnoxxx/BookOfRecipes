@@ -15,7 +15,8 @@ data class Recipe(
     val name: String,
     val type: Long,
     val recipeText: String,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val photoId: String?
 )
 
 @Entity(tableName = "recipesAndIngredients")
@@ -23,7 +24,7 @@ data class RecipesAndIngredients(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val recipeId: Long,
     val ingredientId: Long,
-    val howMany: String?,
+    val howMany: String?
 )
 
 @Entity(tableName = "categories")

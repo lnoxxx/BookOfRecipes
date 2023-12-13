@@ -45,6 +45,9 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         database = app.database
         //init
         recyclerViewInit()
+        bindingRecipes.openAddRecipeFragmentButton.setOnClickListener {
+            findNavController().navigate(R.id.action_recipesFragment_to_addFragment)
+        }
         return bindingRecipes.root
     }
 
@@ -64,7 +67,8 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                 } else {
                     bindingRecipes.noRecipeTV.visibility = View.GONE
                 }
-                adapter = RecipeRecyclerViewAdapter(this@RecipesFragment,recipeArray)
+                adapter = RecipeRecyclerViewAdapter(this@RecipesFragment,recipeArray, true, requireContext()
+                )
                 bindingRecipes.recipeRecyclerView.adapter = adapter
                 searchInit()
             }
@@ -119,6 +123,7 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
         bundle.putString("recipeName", recipe.name)
         bundle.putString("recipeText", recipe.recipeText)
         bundle.putLong("recipeCategory", recipe.type)
+        bundle.putString("recipePhoto", recipe.photoId)
         setFragmentResult("openRecipeRead",bundle)
         findNavController().navigate(R.id.action_recipesFragment_to_recipeReadFragment)
     }
@@ -134,7 +139,8 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                 name = recipe.name,
                 type = recipe.type,
                 recipeText = recipe.recipeText,
-                isFavorite = true
+                isFavorite = true,
+                photoId = recipe.photoId
             )
             database.recipeDao().updateRecipe(newRecipe)
         }
@@ -147,7 +153,8 @@ class RecipesFragment : Fragment(), RecipeRecyclerViewAdapter.Listener {
                 name = recipe.name,
                 type = recipe.type,
                 recipeText = recipe.recipeText,
-                isFavorite = false
+                isFavorite = false,
+                photoId = recipe.photoId
             )
             database.recipeDao().updateRecipe(newRecipe)
         }

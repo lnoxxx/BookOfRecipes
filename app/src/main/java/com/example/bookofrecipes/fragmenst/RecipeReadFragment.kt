@@ -1,11 +1,14 @@
 package com.example.bookofrecipes.fragmenst
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.findNavController
@@ -17,10 +20,12 @@ import com.example.bookofrecipes.dataClasses.IngredientCount
 import com.example.bookofrecipes.dataBase.AppDatabase
 import com.example.bookofrecipes.databinding.FragmentRecipeReadBinding
 import com.example.bookofrecipes.rcAdapters.ChoseIngredientRVAdapter
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
@@ -35,6 +40,7 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
     private var recipeText: String? = ""
     private var recipeCategory: Long = 0
     private var categoryName: String? = ""
+    private var recipePhoto: String? = null
     private var ingredientArrayList: MutableList<IngredientCount> = mutableListOf()
 
     override fun onCreateView(
@@ -56,6 +62,7 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
             bundle.putString("recipeText", recipeText)
             bundle.putLong ("recipeCategoryId", recipeCategory)
             bundle.putString ("recipeCategoryName", categoryName)
+            bundle.putString("recipePhoto", recipePhoto)
 
             setFragmentResult("editRecipe",bundle)
             it.findNavController().navigate(R.id.action_recipeReadFragment_to_editRecipeFragment)
@@ -89,8 +96,22 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
                 binding.ingrRecyclerView.adapter = ChoseIngredientRVAdapter(this@RecipeReadFragment ,ingredientArrayList, false)
                 binding.recipeNameTV.text = recipeName
                 binding.recipeTextTV.text = recipeText
+                if (recipePhoto != null){
+                    binding.imageRecipeCard.visibility = View.VISIBLE
+                    val uri = getFileUri(requireContext() , recipePhoto!!)
+                    Picasso.get().load(uri).into(binding.imageView7)
+                }
             }
         }
+    }
+
+    private fun getFileUri(context: Context, filePath: String): Uri {
+        val file = File(filePath)
+        return FileProvider.getUriForFile(
+            context,
+            context.packageName + ".provider",
+            file
+        )
     }
 
     private fun init(){
@@ -99,6 +120,7 @@ class RecipeReadFragment : Fragment(), ChoseIngredientRVAdapter.Listener {
             recipeName = bundle.getString("recipeName")
             recipeText = bundle.getString("recipeText")
             recipeCategory = bundle.getLong("recipeCategory")
+            recipePhoto = bundle.getString("recipePhoto")
         }
     }
 
