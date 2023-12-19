@@ -138,6 +138,16 @@ class IngredientEditFragment : Fragment(), SearchIngredientRVAdapter.Listener {
                 val inputText = editText.text.toString()
                 val addIngredient = Ingredient(name = inputText)
                 CoroutineScope(Dispatchers.IO).launch {
+                    val ingredientList = database.ingredientDao().getAllIngredients()
+                    for (ingredient in ingredientList){
+                        if (ingredient.name == editText.text.toString().trim(' ')){
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Ингредиент уже существует!", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                            return@launch
+                        }
+                    }
                     val ingredientId = database.ingredientDao().insert(addIngredient)
                     val newIngredient = database.ingredientDao().getIngredientById(ingredientId)
                     withContext(Dispatchers.Main){

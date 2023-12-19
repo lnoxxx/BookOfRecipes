@@ -118,9 +118,19 @@ class CategoriesFragment : Fragment(), CategoryRcAdapter.Listener {
                 Toast.makeText(context, "Название категории слишком длинное!", Toast.LENGTH_LONG)
                     .show()
             } else {
-                val inputText = editText.text.toString()
+                val inputText = editText.text.toString().trim(' ')
                 val addedCategory = Category(name = inputText)
                 CoroutineScope(Dispatchers.IO).launch {
+                    val categoryList = database.CategoryDao().getAllCategories()
+                    for (category in categoryList){
+                        if (category.name == editText.text.toString().trim(' ')){
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Категория уже существует!", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                            return@launch
+                        }
+                    }
                     val id = database.CategoryDao().insert(addedCategory)
                     withContext(Dispatchers.Main) {
                         val newCategory = Category(id = id, name = addedCategory.name)

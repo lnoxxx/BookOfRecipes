@@ -82,6 +82,9 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
         binding.addPhotoCardView.setOnClickListener {
             photoAdd()
         }
+        binding.removePhotoBtn.setOnClickListener {
+            removePhoto()
+        }
         binding.mainEditLinearLayout.alpha = 0f
 
         val viewModel: SharedViewModel by activityViewModels()
@@ -151,6 +154,9 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
         if (recipePhoto != null){
             val uri = getFileUri(requireContext() , recipePhoto!!)
             Picasso.get().load(uri).into(binding.recipeImage)
+            binding.removePhotoBtn.visibility = View.VISIBLE
+        } else{
+            binding.removePhotoBtn.visibility = View.GONE
         }
     }
 
@@ -186,12 +192,19 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             return
         }
         CoroutineScope(Dispatchers.IO).launch {
+            val recipeFav = database.recipeDao().getFavoriteRecipe()
+            var favorite = false
+            for (recipe in recipeFav){
+                if (recipe.id == recipeID){
+                    favorite = true
+                }
+            }
             val changedRecipe = Recipe(
                 id = recipeID,
                 name = binding.nameRecipeET.text.toString(),
                 type = chosenId,
                 recipeText = binding.recipeTextET.text.toString(),
-                isFavorite = isFavorite,
+                isFavorite = favorite,
                 photoId = recipePhoto
             )
             database.recipeDao().updateRecipe(changedRecipe)
@@ -281,12 +294,19 @@ class EditRecipeFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener
             val selectedImageUri: Uri? = data.data
             val photoUri = selectedImageUri.toString()
             if (selectedImageUri != null && context!=null){
+                binding.removePhotoBtn.visibility = View.VISIBLE
                 recipePhoto = saveImageToInternalStorage(requireContext(),selectedImageUri)
             }
 //            bindingAdd.addPhotoCardView.visibility = View.GONE
 //            bindingAdd.imageCardView.visibility = View.VISIBLE
             Picasso.get().load(selectedImageUri).into(binding.recipeImage)
         }
+    }
+
+    private fun removePhoto(){
+        binding.recipeImage.setImageDrawable(null)
+        recipePhoto = null
+        binding.removePhotoBtn.visibility = View.GONE
     }
 
 }

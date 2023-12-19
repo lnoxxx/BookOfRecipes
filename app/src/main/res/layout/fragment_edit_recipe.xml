@@ -25,6 +25,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/imageCardView"
+                style="@style/MainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -39,6 +40,20 @@
                     android:layout_height="240dp"
                     android:scaleType="centerCrop"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                <Button
+                    android:id="@+id/removePhotoBtn"
+                    style="@style/RedButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="16dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Удалить"
+                    android:visibility="gone"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_delete" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/addPhotoCardView"

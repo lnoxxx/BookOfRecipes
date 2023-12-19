@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -96,6 +97,9 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
         bindingAdd.addPhotoCardView.setOnClickListener {
             photoAdd()
         }
+        bindingAdd.removePhotoButton.setOnClickListener {
+            removePhoto()
+        }
 
         //defaultCategoryText
         bindingAdd.chosenCategoryTV.text = chosenCategoryName
@@ -116,8 +120,12 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
             menuOpen = true
         }
         if (photoUri!=null){
+            bindingAdd.removePhotoButton.visibility = View.VISIBLE
             Picasso.get().load(Uri.parse(photoUri)).into(bindingAdd.recipeImage)
+        } else{
+            bindingAdd.removePhotoButton.visibility = View.GONE
         }
+
     }
     override fun onStart() {
         super.onStart()
@@ -145,6 +153,8 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
         }
     }
 
+
+
     // Загрузка фоток
     private fun photoAdd(){
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -159,11 +169,19 @@ class AddFragment : Fragment(), ChoseCategoryRecyclerViewAdapter.Listener,
             photoUri = selectedImageUri.toString()
             if (selectedImageUri != null && context!=null){
                 photoPath = saveImageToInternalStorage(requireContext(),selectedImageUri)
+                bindingAdd.removePhotoButton.visibility = View.VISIBLE
             }
 //            bindingAdd.addPhotoCardView.visibility = View.GONE
 //            bindingAdd.imageCardView.visibility = View.VISIBLE
             Picasso.get().load(selectedImageUri).into(bindingAdd.recipeImage)
         }
+    }
+
+    private fun removePhoto(){
+        bindingAdd.recipeImage.setImageDrawable(null)
+        photoPath = null
+        photoUri = null
+        bindingAdd.removePhotoButton.visibility = View.GONE
     }
 
     private fun changeMenuView(){

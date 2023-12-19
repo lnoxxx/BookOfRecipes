@@ -37,7 +37,22 @@
                     android:id="@+id/recipeImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                <Button
+                    android:id="@+id/removePhotoButton"
+                    style="@style/RedButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="16dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Убрать"
+                    android:visibility="visible"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_delete" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/addPhotoCardView"
